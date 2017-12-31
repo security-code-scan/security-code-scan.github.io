@@ -12,7 +12,7 @@
 
 <span class="octicon octicon-plug"/> Works on Visual Studio 2015 or higher. Free Visual Studio [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) and paid Professional and Enterprise editions are supported.
 
-<span class="octicon octicon-mark-github"/> [Open Source](https://github.com/security-code-scan)
+<span class="octicon octicon-mark-github"/> [Open Source](https://github.com/security-code-scan/security-code-scan)
 # Installation
 Security Code Scan (SCS) can be installed as:
 * [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=JaroslavLobacevski.SecurityCodeScan). Use the link or open "Tools > Extensions and Updates..." Select "Online" in the tree on the left and search for SecurityCodeScan in the right upper field. Click "Download" and install.
