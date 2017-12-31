@@ -80,6 +80,7 @@ If no SCS warnings are displayed, temporarily disable other installed analyzers.
 [OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)
 
 <div id="SCS0001"></div>
+
 ### SCS0001 - Command Injection
 The dynamic value passed to the command execution should be validated.
 #### Risk
@@ -110,6 +111,7 @@ if(rgx.IsMatch(input))
 [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](http://cwe.mitre.org/data/definitions/78.html)
 
 <div id="SCS0003"></div>
+
 ### SCS0003 - XPath Injection
 The dynamic value passed to the XPath query should be validated.
 #### Risk
@@ -144,6 +146,7 @@ if(rgx.IsMatch(input)) //Additional validation
 [OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)
 
 <div id="SCS0007"></div>
+
 ### SCS0007 - XML eXternal Entity Injection (XXE)
 The XML parser is configured incorrectly. The operation could be vulnerable to XML eXternal Entity (XXE) processing.
 #### Risk
@@ -194,6 +197,7 @@ In .NET Framework versions 4.5.2 and up, XmlTextReader's internal XmlResolver is
 [Identifying Xml eXternal Entity vulnerability (XXE)](http://blog.h3xstream.com/2014/06/identifying-xml-external-entity.html)
 
 <div id="SCS0018"></div>
+
 ### SCS0018 - Path Traversal
 A path traversal attack (also known as directory traversal) aims to access files and directories that are stored outside the expected directory.By manipulating variables that reference files with “dot-dot-slash (../)” sequences and its variations or by using absolute file paths, it may be possible to access arbitrary files and directories stored on file system including application source code or configuration and critical system files.
 #### Risk
@@ -230,6 +234,7 @@ If the input is not supplied by user or a validation is in place the warning can
 
 [OS Command Injection, Path Traversal & Local File Inclusion Vulnerability - Notes](https://riseandhack.blogspot.com/2015/02/os-command-injection-path-traversal.html)
 <div id="SCS0029"></div>
+
 ### SCS0029 - Cross-Site Scripting (XSS)
 A potential XSS was found. The endpoint returns a variable from the client input that has not been encoded. To protect against stored XSS attacks, make sure any dynamic content coming from user or data store cannot be used to inject JavaScript on a page. Most modern frameworks will escape dynamic content by default automatically (Razor for example) or by using special syntax (`<%: content %>`, `<%= HttpUtility.HtmlEncode(content) %>`).
 #### Risk
@@ -281,6 +286,7 @@ Malicious user might get direct read and/or write access to the database. If the
 
 [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](http://cwe.mitre.org/data/definitions/89.html)
 <div id="SCS0002"></div>
+
 ### SCS0002 - SQL Injection (LINQ)
 #### Vulnerable Code
 ```cs
@@ -303,6 +309,7 @@ var id = context.ExecuteQuery<IEnumerable<string>>(query, userId).SingleOrDefaul
 #### References
 [LINQ: How to Query for Information](https://msdn.microsoft.com/en-us/library/bb546192(v=vs.110).aspx)
 <div id="SCS0014"></div>
+
 ### SCS0014 - SQL Injection (WebControls)
 Unsafe usage of System.Web.UI.WebControls.SqlDataSource, System.Web.UI.WebControls.SqlDataSourceView or Microsoft.Whos.Framework.Data.SqlUtility.
 #### Vulnerable Code
@@ -361,6 +368,7 @@ If you are connecting to an OLE DB or ODBC data source, you can configure the Sq
 
 [See references in the main SQL Injection section](#SQLInjection)
 <div id="SCS0020"></div>
+
 ### SCS0020 - SQL Injection (OLE DB)
 Use parametrized queries to mitigate SQL injection.
 #### Vulnerable Code
@@ -391,6 +399,7 @@ using (var connection = new OleDbConnection(connectionString))
 
 [See references in the main SQL Injection section](#SQLInjection)
 <div id="SCS0025"></div>
+
 ### SCS0025 - SQL Injection (ODBC)
 Use parametrized queries to mitigate SQL injection.
 #### Vulnerable Code
@@ -409,6 +418,7 @@ OdbcDataReader reader = command.ExecuteReader();
 
 [See references in the main SQL Injection section](#SQLInjection)
 <div id="SCS0026"></div>
+
 ### SCS0026 - SQL Injection (MsSQL Data Provider)
 Use parametrized queries to mitigate SQL injection.
 #### Vulnerable Code
@@ -427,6 +437,7 @@ cmd.Parameters.AddWithValue("username", username);
 ## Cryptography
 
 <div id="SCS0004"></div>
+
 ### SCS0004 - Certificate Validation Disabled
 Certificate Validation has been disabled. The communication could be intercepted.
 #### Risk
@@ -450,6 +461,7 @@ ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain,
 
 [CWE-295: Improper Certificate Validation](http://cwe.mitre.org/data/definitions/295.html)
 <div id="SCS0005"></div>
+
 ### SCS0005 - Weak Random Number Generator
 The random numbers generated could be predicted.
 #### Risk
@@ -472,6 +484,7 @@ var rnd = RandomNumberGenerator.Create();
 [CWE-295: Improper Certificate Validation](http://cwe.mitre.org/data/definitions/295.html)
 
 <div id="SCS0006"></div>
+
 ### SCS0006 - Weak hashing function
 MD5 or SHA1 have known collision weaknesses and are no longer considered strong hashing algorithms.
 #### Vulnerable Code
@@ -491,6 +504,7 @@ var hash = hashProvider.ComputeHash(str);
 
 [Salted Password Hashing - Doing it Right](https://crackstation.net/hashing-security.htm)
 <div id="SCS0010"></div>
+
 ### SCS0010 - Weak cipher algorithm
 DES and 3DES are not considered a strong cipher for modern applications. Currently, NIST recommends the usage of AES block ciphers instead.
 #### Risk
@@ -555,6 +569,7 @@ Notice that AES itself doesn't protect from encrypted data tampering. For an exa
 
 [StackOverflow: Authenticated encryption example](http://stackoverflow.com/questions/202011/encrypt-and-decrypt-a-string/10366194#10366194)
 <div id="SCS0011"></div>
+
 ### SCS0011 - Weak CBC Mode
 The CBC mode alone is susceptible to padding oracle attack.
 #### Risk
@@ -598,6 +613,7 @@ See the [Solution in Weak Cipher Mode](#SCS0013).
 
 [CWE-696: Incorrect Behavior Order](http://cwe.mitre.org/data/definitions/696.html)
 <div id="SCS0012"></div>
+
 ### SCS0012 - Weak ECB Mode
 ECB mode will produce the same result for identical blocks (ie: 16 bytes for AES). An attacker could be able to guess the encrypted message. The use of AES in CBC mode with a HMAC is recommended guaranteeing integrity and confidentiality.
 #### Risk
@@ -643,6 +659,7 @@ Use some other mode, but notice that CBC without authenticated integrity check i
 
 [CWE-696: Incorrect Behavior Order](http://cwe.mitre.org/data/definitions/696.html)
 <div id="SCS0013"></div>
+
 ### SCS0013 - Weak Cipher Mode
 The cipher text produced is susceptible to alteration by an adversary.
 #### Risk
@@ -793,6 +810,7 @@ public static byte[] SimpleEncrypt(byte[] secretMessage, byte[] cryptKey, byte[]
 ## Cookies
 
 <div id="SCS0008"></div>
+
 ### SCS0008 - Cookie Without SSL Flag
 It is recommended to specify the Secure flag to new cookie.
 #### Risk
@@ -830,6 +848,7 @@ cookie.HttpOnly = true;
 [Rapid7: Missing Secure Flag From SSL Cookie](https://www.rapid7.com/db/vulnerabilities/http-cookie-secure-flag)
 
 <div id="SCS0009"></div>
+
 ### SCS0009 - Cookie Without HttpOnly Flag
 It is recommended to specify the HttpOnly flag to new cookie.
 #### Risk
@@ -865,6 +884,7 @@ cookie.HttpOnly = true; //Add this flag
 ## View State
 
 <div id="SCS0023"></div>
+
 ### SCS0023 - View State Not Encrypted
 The `viewStateEncryptionMode` is not set to `Always` in configuration file.
 #### Risk
@@ -900,6 +920,7 @@ Explicitly set to `Always` and encrypt with with the .NET [machine key](https://
 
 [MSDN: machineKey Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/w8h3skw9(v=vs.100).aspx)
 <div id="SCS0024"></div>
+
 ### SCS0024 - View State MAC Disabled
 The `enableViewStateMac` is disabled in configuration file. (This feature cannot be disabled starting .NET 4.5.1)
 #### Risk
@@ -927,6 +948,7 @@ Or set it explicitly:
 ## Request Validation
 
 <div id="SCS0017"></div>
+
 ### SCS0017 - Request Validation Disabled (Attribute)
 Request validation is disabled. Request validation allows the filtering of some [XSS](#SCS0029) patterns submitted to the application.
 #### Risk
@@ -958,6 +980,7 @@ Always user proper encoder (Html, Url, etc.) before displaying or using user sup
 See [XSS](#SCS0029) references.
 
 <div id="SCS0021"></div>
+
 ### SCS0021 - Request Validation Disabled (Configuration File)
 The `validateRequest` which provides additional protection against [XSS](#SCS0029) is disabled in configuration file.
 #### Risk
@@ -989,6 +1012,7 @@ See [XSS](#SCS0029) references.
 ## Password Management
 
 <div id="SCS0015"></div>
+
 ### SCS0015 - Hardcoded Password
 The password configuration to this API appears to be hardcoded.
 #### Risk
@@ -1018,6 +1042,7 @@ config.setPassword(apiPassword);
 [CWE-259: Use of Hard-coded Password](http://cwe.mitre.org/data/definitions/259.html)
 
 <div id="SCS0034"></div>
+
 ### SCS0034 - Password RequiredLength Not Set
 The RequiredLength property must be set with a minimum value of 8.
 #### Risk
@@ -1032,6 +1057,7 @@ See the solution for [Password Complexity](#SCS0033)
 #### References
 (MSDN: ASP.NET Identity PasswordValidator Class)(https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator(v=vs.108).aspx)
 <div id="SCS0032"></div>
+
 ### SCS0032 - Password RequiredLength Too Small
 The minimal length of a password is recommended to be set at least to 8.
 #### Risk
@@ -1048,6 +1074,7 @@ See the solution for [Password Complexity](#SCS0033)
 #### References
 (MSDN: ASP.NET Identity PasswordValidator Class)(https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator(v=vs.108).aspx)
 <div id="SCS0033"></div>
+
 ### SCS0033 - Password Complexity
 PasswordValidator should have at least two requirements for better security (RequiredLength, RequireDigit, RequireLowercase, RequireUppercase and/or RequireNonLetterOrDigit).
 #### Risk
@@ -1075,6 +1102,7 @@ PasswordValidator pwdv = new PasswordValidator
 ## Other
 
 <div id="SCS0016"></div>
+
 ### SCS0016 - Cross-Site Request Forgery (CSRF)
 Anti-forgery token is missing.
 #### Risk
@@ -1112,6 +1140,7 @@ public class TestController
 
 [OWASP: CSRF Prevention Cheat Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet)
 <div id="SCS0019"></div>
+
 ### SCS0019 - OutputCache Conflict
 Caching conflicts with authorization.
 #### Risk
@@ -1143,6 +1172,7 @@ public class AdminController : Controller
 #### References
 [Improving Performance with Output Caching](https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/controllers-and-routing/improving-performance-with-output-caching-cs)
 <div id="SCS0022"></div>
+
 ### SCS0022 - Event Validation Disabled
 The `enableEventValidation` is disabled in configuration file.
 #### Risk
