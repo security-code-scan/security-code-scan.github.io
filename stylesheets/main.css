@@ -203,7 +203,7 @@ ol.toc {
 
 .btn-transparent:hover {
     background-color: #fff;
-    color: #115086;
+    color: rgb(104, 33, 122);
 }
 
 .btn-transparent {
@@ -282,17 +282,15 @@ article h1 {
   letter-spacing: -1px;
 }
 
-article h2 {
-  color: #000;
-}
-
 .article-heading img {
   padding: 0;
   margin: 0;
   background: transparent;
   border: none;
 }
-
+.icon-container {
+margin-left: 5px;
+}
 article img {
   max-width: 100%;
   padding: 2px;
@@ -408,9 +406,6 @@ ul.toc>li a.active {
   article h1 {
     margin-left: 96px;
     font-size: 34px;
-  }
-  .icon-container {
-    margin-left: 5px;
   }
   article.full .content-body {
     width: 100%;
