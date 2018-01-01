@@ -25,13 +25,13 @@ html, body {
 /* Columns & Layout */
 
 .wrap {
-  max-width: 1360px;
+  max-width: 1260px;
   padding: 0 15px;
   margin: 0 auto;
 }
 
 article.full .content-body {
-  width: 950px;
+  width: 850px;
   padding-bottom: 30px;
   font-size: 16px;
 }
@@ -280,7 +280,7 @@ ul.toc>li a.active {
   color: #ff6600;
 }
 
-@media only screen and (min-width: 1160px) and (max-width: 1359px) {
+@media only screen and (min-width: 1160px) and (max-width: 1259px) {
   article.full .content-body {
     width: 800px;
   }
