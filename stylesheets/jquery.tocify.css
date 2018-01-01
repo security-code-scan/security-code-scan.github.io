@@ -5,7 +5,6 @@
 
 /* The Table of Contents container element */
 .tocify {
-    width: 300px;
     max-height: 90%;
     white-space: nowrap;
 }
