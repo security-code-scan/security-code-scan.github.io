@@ -31,7 +31,6 @@ Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is base
 ## Analyzing Config Files
 To enable analysis of config files you need to modify all C#(.csproj) and VB.NET(.vbproj) projects in a solution and add "AdditionalFileItemNames" element as shown below:
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     [..]
@@ -320,7 +319,7 @@ Unsafe usage of System.Web.UI.WebControls.SqlDataSource, System.Web.UI.WebContro
 #### Solution
 To help protect against SQL statement exploits, never create SQL queries using string concatenation. Instead, use a parameterized query and assign user input to parameter objects.
 By default, the SqlDataSource control uses the System.Data.SqlClient data provider to work with SQL Server as the data source. The System.Data.SqlClient provider supports named parameters as placeholders, as shown in the following example:
-```cs
+```xml
 <asp:sqlDataSource ID="EmployeeDetailsSqlDataSource" 
   SelectCommand="SELECT EmployeeID, LastName, FirstName FROM Employees WHERE EmployeeID = @EmpID"
 
@@ -345,7 +344,7 @@ By default, the SqlDataSource control uses the System.Data.SqlClient data provid
 </asp:sqlDataSource>
 ```
 If you are connecting to an OLE DB or ODBC data source, you can configure the SqlDataSource control to use the System.Data.OleDb or System.Data.Odbc provider to work with your data source, respectively. The System.Data.OleDb and System.Data.Odbc providers support only positional parameters identified by the "?" character, as shown in the following example:
-```cs
+```xml
 ...
 <asp:SqlDataSource ID="EmployeeDetailsSqlDataSource" 
   SelectCommand="SELECT EmployeeID, LastName, FirstName, Address, City, Region, PostalCode
@@ -1027,7 +1026,6 @@ It is recommended to externalize configuration such as password to avoid leakage
 
 Configuration file :
 ```xml
-<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <appSettings>
     <add key="api_password" value="b3e521073ca276dc2b7caf6247b6ddc72d5e2d2d" />

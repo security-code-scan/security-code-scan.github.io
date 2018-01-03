@@ -1,55 +1,62 @@
 /*
 
-Visual Studio-like style based on original C# coloring by Jason Diamond <jason@diamond.name>
+Visual Studio-like style based on original C# coloring based on work of Jason Diamond <jason@diamond.name>
 
 */
-.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: white;
-  color: black;
-}
-
-.hljs-comment,
-.hljs-quote,
-.hljs-variable {
+.hljs-comment {
   color: #008000;
 }
 
+.hljs-pscommand,
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-built_in,
-.hljs-name,
 .hljs-tag {
-  color: #00f;
+  color: #0101FD;
+}
+
+.hljs-name {
+  color: #a2152a;
+}
+
+.hljs-literal {
+  color: #0101FD;
 }
 
 .hljs-string,
-.hljs-title,
 .hljs-section,
-.hljs-attribute,
-.hljs-literal,
 .hljs-template-tag,
 .hljs-template-variable,
-.hljs-type,
-.hljs-addition {
+.hljs-deletion,
+.hljs-code {
   color: #a31515;
 }
 
-.hljs-deletion,
+.hljs-parameter,
+.hljs-type,
+.hljs-attribute,
+.hljs-title,
+.hljs-addition,
 .hljs-selector-attr,
 .hljs-selector-pseudo,
 .hljs-meta {
-  color: #2b91af;
+  color: #007d9a;
 }
 
 .hljs-doctag {
-  color: #808080;
+  color: #737373;
 }
 
 .hljs-attr {
   color: #f00;
+}
+
+.hljs-control {
+  color: #af00db;
+}
+
+.hljs-helper {
+  color: #795e26;
 }
 
 .hljs-symbol,
@@ -58,11 +65,25 @@ Visual Studio-like style based on original C# coloring by Jason Diamond <jason@d
   color: #00b0e8;
 }
 
-
 .hljs-emphasis {
   font-style: italic;
 }
 
 .hljs-strong {
   font-weight: bold;
+}
+
+.hljs-reserved,
+.hljs-constant {
+  color: #cd3131;
+}
+
+.line-highlight {
+  margin: 0 -12px;
+  padding: 1px 12px;
+  background-color: #ffc;
+}
+
+.language-xml .hljs-string {
+  color: #0000ff;
 }
