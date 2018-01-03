@@ -1054,7 +1054,7 @@ PasswordValidator pwdv = new PasswordValidator();
 #### Solution
 See the solution for [Password Complexity](#SCS0033)
 #### References
-(MSDN: ASP.NET Identity PasswordValidator Class)(https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator(v=vs.108).aspx)
+[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)
 <div id="SCS0032"></div>
 
 ### SCS0032 - Password RequiredLength Too Small
@@ -1071,7 +1071,7 @@ PasswordValidator pwdv = new PasswordValidator
 #### Solution
 See the solution for [Password Complexity](#SCS0033)
 #### References
-(MSDN: ASP.NET Identity PasswordValidator Class)(https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator(v=vs.108).aspx)
+[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)
 <div id="SCS0033"></div>
 
 ### SCS0033 - Password Complexity
@@ -1097,7 +1097,7 @@ PasswordValidator pwdv = new PasswordValidator
 };
 ```
 #### References
-(MSDN: ASP.NET Identity PasswordValidator Class)(https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator(v=vs.108).aspx)
+[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)
 ## Other
 
 <div id="SCS0016"></div>
