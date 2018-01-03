@@ -191,10 +191,15 @@
     white-space: pre;
     border: none;
     background: transparent; }
+.markdown-body code {
+    font-size: 15px;
+}
+.markdown-body pre code {
+    font-size: 13px;
+}
   .markdown-body .highlight pre, .markdown-body pre {
     background-color: #f8f8f8;
     border: 1px solid #ddd;
-    font-size: 13px;
     line-height: 19px;
     overflow: auto;
     padding: 6px 10px;
