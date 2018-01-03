@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="components/primer/markdown.css">
   <link rel="stylesheet" href="components/primer/octicons.css">
   <link href="stylesheets/main.css" rel="stylesheet">
-  <link href="stylesheets/pygments.css" rel="stylesheet">
+  <link href="stylesheets/vs.css" rel="stylesheet">
   <link href="stylesheets/jquery.tocify.css" rel="stylesheet">
 
   <script src="javascripts/jquery.js" type="text/javascript"></script>
@@ -20,6 +20,7 @@
   <script src="javascripts/snap.svg-min.js" type="text/javascript"></script>
   <script src="javascripts/application.js" type="text/javascript"></script>
   <script src="javascripts/jquery.tocify.js" type="text/javascript"></script>
+  <script src="javascripts/highlight.pack.js" type="text/javascript"></script>
 
   <script type="text/javascript">
               $(function() {
@@ -28,6 +29,7 @@
                                      context: ".markdown-body",
                                      hashGenerator: tocifyHasher});
               });
+              hljs.initHighlightingOnLoad();
   </script>
 
 </head>
