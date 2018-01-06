@@ -77,8 +77,7 @@ If no SCS warnings are displayed, temporarily disable other installed analyzers.
 # Rules
 ## Injection
 #### References
-[OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)
-
+[OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)  
 <div id="SCS0001"></div>
 
 ### SCS0001 - Command Injection
@@ -104,12 +103,9 @@ if(rgx.IsMatch(input))
 }
 ```
 #### References
-[OWASP: Command Injection](https://www.owasp.org/index.php/Command_Injection)
-
-[OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)
-
-[CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](http://cwe.mitre.org/data/definitions/78.html)
-
+[OWASP: Command Injection](https://www.owasp.org/index.php/Command_Injection)  
+[OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)  
+[CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](http://cwe.mitre.org/data/definitions/78.html)  
 <div id="SCS0003"></div>
 
 ### SCS0003 - XPath Injection
