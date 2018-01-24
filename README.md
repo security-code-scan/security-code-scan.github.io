@@ -1192,3 +1192,7 @@ public ActionResult LogOn(LogOnModel model, string returnUrl)
 [Microsoft: Preventing Open Redirection Attacks (C#)](https://docs.microsoft.com/en-us/aspnet/mvc/overview/security/preventing-open-redirection-attacks)  
 [OWASP: Unvalidated Redirects and Forwards Cheat Sheet](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet)  
 [Hacksplaining: preventing malicious redirects](https://www.hacksplaining.com/prevention/open-redirects)  
+# Release Notes
+## 2.5.0
+
+## 2.4.1
