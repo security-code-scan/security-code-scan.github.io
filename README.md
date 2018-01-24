@@ -1124,3 +1124,71 @@ Or set it explicitly:
 #### References
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: Page.EnableEventValidation Property](http://msdn.microsoft.com/en-us/library/system.web.ui.page.enableeventvalidation.aspx)  
+<div id="SCS0027"></div>
+
+### SCS0027 - Open Redirect
+The dynamic value passed to the `Redirect` should be validated.
+#### Risk
+Your site may be used in [phishing](https://en.wikipedia.org/wiki/Phishing) attacks. An attacker may craft a trustworthy looking link that starts from your domain, but redirecting a victim to a similar attacking domain: `http://www.yourdomain.com/loginpostback?redir=http://www.urdomain.com/login`
+#### Vulnerable Code
+```cs
+[HttpPost]
+public ActionResult LogOn(LogOnModel model, string returnUrl)
+{
+    if (ModelState.IsValid)
+    {
+        if (MembershipService.ValidateUser(model.UserName, model.Password))
+        {
+            FormsService.SignIn(model.UserName, model.RememberMe);
+            if (!String.IsNullOrEmpty(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        else
+        {
+            ModelState.AddModelError("", "The user name or password provided is incorrect.");
+        }
+    }
+ 
+    // If we got this far, something failed, redisplay form
+    return View(model);
+}
+```
+#### Solution
+```cs
+[HttpPost]
+public ActionResult LogOn(LogOnModel model, string returnUrl)
+{
+    if (ModelState.IsValid)
+    {
+        if (MembershipService.ValidateUser(model.UserName, model.Password))
+        {
+            FormsService.SignIn(model.UserName, model.RememberMe);
+            if (Url.IsLocalUrl(returnUrl)) // Make sure the url is relative, not absolute path
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        else
+        {
+            ModelState.AddModelError("", "The user name or password provided is incorrect.");
+        }
+    }
+ 
+    // If we got this far, something failed, redisplay form
+    return View(model);
+}
+```
+#### References
+[Microsoft: Preventing Open Redirection Attacks (C#)](https://docs.microsoft.com/en-us/aspnet/mvc/overview/security/preventing-open-redirection-attacks)  
+[OWASP: Unvalidated Redirects and Forwards Cheat Sheet](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet)  
+[Hacksplaining: preventing malicious redirects](https://www.hacksplaining.com/prevention/open-redirects)  
