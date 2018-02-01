@@ -83,7 +83,7 @@ If no SCS warnings are displayed, temporarily disable other installed analyzers.
 ### SCS0001 - Command Injection
 The dynamic value passed to the command execution should be validated.
 #### Risk
-If a malicious user is able to controlled either the command FileName or Arguments, he might be able to execute unwanted commands or add unwanted argument. This behavior would not be possible if input parameter are validate against a white-list of characters.
+If a malicious user controls either the FileName or Arguments, he might be able to execute unwanted commands or add unwanted argument. This behavior would not be possible if input parameter are validate against a white-list of characters.
 #### Vulnerable Code
 ```cs
 var p = new Process();
@@ -830,7 +830,7 @@ The default value is `Auto`:
 ```xml
 <system.web>
    ...
-   <pages [..] validateRequest="true" [..]/>
+   <pages [..] viewStateEncryptionMode="Auto" [..]/>
    ...
 </system.web>
 ```
@@ -899,7 +899,7 @@ public class TestController
 }
 ```
 #### Solution
-Although it performs blacklisting (that is worse than whitelisting by definition) and bypasses are known. It provides a basic first line of defense for your application. Do not disable the validation:
+Although it performs blacklisting (that is worse than whitelisting by definition) and you should not rely solely on it for XSS protection, it provides a first line of defense for your application. Do not disable the validation:
 ```cs
 public class TestController
 {
@@ -911,6 +911,8 @@ public class TestController
 ```
 Always user proper encoder (Html, Url, etc.) before displaying or using user supplied data (even if it is loaded from database).
 #### References
+[MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
+[OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
 See [XSS](#SCS0029) references.  
 <div id="SCS0021"></div>
 
@@ -927,7 +929,7 @@ The `validateRequest` which provides additional protection against [XSS](#SCS002
 </system.web>
 ```
 #### Solution
-Although it performs blacklisting (that is worse than whitelisting by definition) and bypasses are known. It provides a basic first line of defense for your application. Do not disable the validation:
+Although it performs blacklisting (that is worse than whitelisting by definition) and you should not rely solely on it for XSS protection, it provides a first line of defense for your application. Do not disable the validation:
 The default value is `true`.
 Or set it explicitly:
 ```xml
@@ -939,6 +941,8 @@ Or set it explicitly:
 ```
 #### References
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
+[MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
+[OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
 See [XSS](#SCS0029) references.  
 ## Password Management
 <div id="SCS0015"></div>
