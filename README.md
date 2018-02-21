@@ -114,7 +114,7 @@ The dynamic value passed to the XPath query should be validated.
 If the user input is not properly filtered, a malicious user could extend the XPath query.
 #### Vulnerable Code
 ```cs
-var doc = new XmlDocument();
+var doc = new XmlDocument {XmlResolver = null};
 doc.Load("/config.xml");
 var results = doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
 ```
@@ -123,7 +123,7 @@ var results = doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
 Regex rgx = new Regex(@"^[a-zA-Z0-9]+$");
 if(rgx.IsMatch(input)) //Additional validation
 {
-    XmlDocument doc = new XmlDocument();
+    XmlDocument doc = new XmlDocument {XmlResolver = null};
     doc.Load("/config.xml");
     var results = doc.SelectNodes("/Config/Devices/Device[id='" + input + "']");
 }
@@ -141,30 +141,33 @@ if(rgx.IsMatch(input)) //Additional validation
 The XML parser is configured incorrectly. The operation could be vulnerable to XML eXternal Entity (XXE) processing.
 #### Risk
 #### Vulnerable Code
-Prior to .NET 4.0
+Prior to .NET 4.5.2
 ```cs
-var settings = new XmlReaderSettings();
-settings.ProhibitDtd = false;
+// DTD expansion is enabled by default
+XmlReaderSettings settings = new XmlReaderSettings();
 XmlReader reader = XmlReader.Create(inputXml, settings);
 ```
-.NET 4.0 - .NET 4.5.2
 ```cs
-var settings = new XmlReaderSettings();
-settings.DtdProcessing = DtdProcessing.Parse;
-XmlReader reader = XmlReader.Create(inputXml, settings);
+XmlDocument xmlDoc = new XmlDocument();
+xmlDoc.Load(pathToXmlFile);
+Console.WriteLine(xmlDoc.InnerText);
 ```
 #### Solution
-Prior to .NET 4.0
+Prior to .NET 4.5.2
 ```cs
 var settings = new XmlReaderSettings();
+// Prior to .NET 4.0
 settings.ProhibitDtd = true; // default is false!
+// .NET 4.0 - .NET 4.5.2
+settings.DtdProcessing = DtdProcessing.Prohibit; // default is DtdProcessing.Parse!
+
 XmlReader reader = XmlReader.Create(inputXml, settings);
 ```
-.NET 4.0 - .NET 4.5.2
 ```cs
-var settings = new XmlReaderSettings();
-settings.DtdProcessing = DtdProcessing.Prohibit; // default is DtdProcessing.Parse!
-XmlReader reader = XmlReader.Create(inputXml, settings);
+XmlDocument xmlDoc = new XmlDocument();
+xmlDoc.XmlResolver = null; // Setting this to NULL disables DTDs - Its NOT null by default.
+xmlDoc.Load(pathToXmlFile);
+Console.WriteLine(xmlDoc.InnerText);
 ```
 .NET 4.5.2 and later
 
@@ -1197,6 +1200,22 @@ public ActionResult LogOn(LogOnModel model, string returnUrl)
 [OWASP: Unvalidated Redirects and Forwards Cheat Sheet](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet)  
 [Hacksplaining: preventing malicious redirects](https://www.hacksplaining.com/prevention/open-redirects)  
 # Release Notes
+## 2.6.0
+XXE analysis expanded.
+More patterns to detect Open Redirect and Path Traversal.
+Weak hash analyzer fixes.
+Added request validation aspx analyzer.
+False positives reduced in hardcoded password manager.
+
+Web.config analysis:
+* The feature was broken. [See how to enable.](#AnalyzingConfigFiles)
+* Added detection of request validation mode.
+* Diagnostic messages improved.
+
+Taint improvements:
+* Area expanded.
+* Taint diagnostic messages include which passed parameter is untrusted.
+
 ## 2.5.0
 Various improvements were made to taint analysis. The analysis was extended from local variables into member variables.
 False positive fixes in:
