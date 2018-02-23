@@ -1200,6 +1200,9 @@ public ActionResult LogOn(LogOnModel model, string returnUrl)
 [OWASP: Unvalidated Redirects and Forwards Cheat Sheet](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet)  
 [Hacksplaining: preventing malicious redirects](https://www.hacksplaining.com/prevention/open-redirects)  
 # Release Notes
+## 2.6.1
+Exceptions analyzing VB.NET projects fixed.
+
 ## 2.6.0
 XXE analysis expanded.
 More patterns to detect Open Redirect and Path Traversal.
