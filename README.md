@@ -1246,7 +1246,7 @@ JsonSerializerSettings
 // DO NOT DO THIS! The cast to MyType happens too late, when malicious code was already executed
 var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
 ```
-3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!):
+3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist):
 ```cs
 class LimitedBinder : SerializationBinder
 {
@@ -1274,7 +1274,7 @@ class LimitedBinder : SerializationBinder
 var formatter = new BinaryFormatter() { Binder = new LimitedBinder () };
 var data = (List<Exception>)formatter.Deserialize (fs);
 ```
-Determining which types are safe is quite difficult, and this approach is not recommended unless necessary. There are many types that might allow non-RCE exploits if they are deserialized from untrusted data. Denial of service is especially common. As an example, the System.Collections.HashTable class is not safe to deserialize from an untrusted stream – the stream can specify the size of the internal “bucket” array and cause an out of memory condition.
+Determining which types are safe is quite difficult, and this approach is not recommended unless necessary. There are many types that might allow non Remote Code Execution exploits if they are deserialized from untrusted data. Denial of service is especially common. As an example, the System.Collections.HashTable class is not safe to deserialize from an untrusted stream – the stream can specify the size of the internal “bucket” array and cause an out of memory condition.
 
 4. Serialize simple [Data Transfer Objects (DTO)](https://en.wikipedia.org/wiki/Data_transfer_object) only. Do not serialize/deserialize type information. For example, use only `TypeNameHandling.None` (the default) in Json.net:
 ```cs
