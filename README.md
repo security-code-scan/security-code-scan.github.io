@@ -1217,8 +1217,8 @@ private void ConvertData(string json)
 There is no simple fix. Do not deserialize untrusted data: user input, cookies or data that crosses trust boundaries.
 
 In case it is unavoidable:
-1. If serialization is done on the server side, then crosses trust boundary, but is not modified and is returned back (like cookie for example) - use signed cryptography (HMAC for instance) to ensure it wasn't tampered.
-2. Do not get the type to deserialize into from untrusted source: the serialized stream itself or other untrusted parameter. `BinaryFormatter` for example reads type information from serialized stream itself and can't be used with untrusted streams:
+1) If serialization is done on the server side, then crosses trust boundary, but is not modified and is returned back (like cookie for example) - use signed cryptography (HMAC for instance) to ensure it wasn't tampered.  
+2) Do not get the type to deserialize into from untrusted source: the serialized stream itself or other untrusted parameter. `BinaryFormatter` for example reads type information from serialized stream itself and can't be used with untrusted streams:
 ```cs
 // DO NOT DO THIS!
 var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
@@ -1245,10 +1245,10 @@ JsonSerializerSettings
 ```cs
 // DO NOT DO THIS! The cast to MyType happens too late, when malicious code was already executed
 var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
-```
-3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!):
+```  
+3) If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!):
 ```cs
-private class LimitedBinder : SerializationBinder
+class LimitedBinder : SerializationBinder
 {
     List<Type> allowedTypes = new List<Type>()
     {
@@ -1265,21 +1265,17 @@ private class LimitedBinder : SerializationBinder
                 return allowedType;
         }
 
-        // Don't return null for unexpected types –
+        // Don’t return null for unexpected types –
         // this makes some serializers fall back to a default binder, allowing exploits.
         throw new Exception("Unexpected serialized type");
     }
 }
 
-private void Deserialize()
-{
-    var formatter = new BinaryFormatter() { Binder = new LimitedBinder () };
-    var data = (List<Exception>)formatter.Deserialize (fs);
-}
+var formatter = new BinaryFormatter() { Binder = new LimitedBinder () };
+var data = (List<Exception>)formatter.Deserialize (fs);
 ```
-Determining which types are safe is quite difficult, and this approach is not recommended unless necessary. There are many types that might allow non Remote Code Execution exploits if they are deserialized from untrusted data. Denial of service is especially common. As an example, the System.Collections.HashTable class is not safe to deserialize from an untrusted stream – the stream can specify the size of the internal “bucket” array and cause an out of memory condition.
-
-4. Serialize simple [Data Transfer Objects (DTO)](https://en.wikipedia.org/wiki/Data_transfer_object) only. Do not serialize/deserialize type information. For example, use only `TypeNameHandling.None` (the default) in Json.net:
+Determining which types are safe is quite difficult, and this approach is not recommended unless necessary. There are many types that might allow non-RCE exploits if they are deserialized from untrusted data. Denial of service is especially common. As an example, the System.Collections.HashTable class is not safe to deserialize from an untrusted stream – the stream can specify the size of the internal “bucket” array and cause an out of memory condition.  
+4) Serialize simple [Data Transfer Objects (DTO)](https://en.wikipedia.org/wiki/Data_transfer_object) only. Do not serialize/deserialize type information. For example, use only `TypeNameHandling.None` (the default) in Json.net:
 ```cs
 class DataForStorage
 {
@@ -1307,7 +1303,6 @@ will produce the following JSON without type information that is perfectly fine 
 [OWASP: Deserialization of untrusted data](https://www.owasp.org/index.php/Deserialization_of_untrusted_data)  
 [Deserialization payload generator for a variety of .NET formatters](https://github.com/pwntester/ysoserial.net)  
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
-
 # Release Notes
 ## 2.7.0
 [Insecure deserialization analyzers](#SCS0028) for multiple libraries and formatters:
