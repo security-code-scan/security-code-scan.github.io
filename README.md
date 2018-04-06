@@ -1265,7 +1265,7 @@ private class LimitedBinder : SerializationBinder
                 return allowedType;
         }
 
-        // Don’t return null for unexpected types –
+        // Don't return null for unexpected types –
         // this makes some serializers fall back to a default binder, allowing exploits.
         throw new Exception("Unexpected serialized type");
     }
