@@ -1246,7 +1246,7 @@ JsonSerializerSettings
 // DO NOT DO THIS! The cast to MyType happens too late, when malicious code was already executed
 var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
 ```
-3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist):
+3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!)
 ```cs
 class LimitedBinder : SerializationBinder
 {
