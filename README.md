@@ -10,9 +10,10 @@
 
 <span class="octicon octicon-pulse"/> Continuous Integration (CI) through [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
 
-<span class="octicon octicon-plug"/> Works on Visual Studio 2015 or higher. Free Visual Studio [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) and paid Professional and Enterprise editions are supported.
+<span class="octicon octicon-plug"/> Works with Visual Studio 2015 or higher. Visual Studio [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx), Professional and Enterprise editions are supported.
 
 <span class="octicon octicon-mark-github"/> [Open Source](https://github.com/security-code-scan/security-code-scan)
+
 # Installation
 Security Code Scan (SCS) can be installed as:
 * [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=JaroslavLobacevski.SecurityCodeScan). Use the link or open "Tools > Extensions and Updates..." Select "Online" in the tree on the left and search for SecurityCodeScan in the right upper field. Click "Download" and install.
@@ -25,7 +26,7 @@ Installing it as NuGet package gives an advantage to choose projects in a soluti
 Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on only the NuGet version runs during a build (VS extension provides intellisense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
 # Configuration
 ## Full Solution Analysis
-*Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package. If VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
+*Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
 
 ![Full Solution Analysis](images/fullsolution.png)
 ## Analyzing Config Files
@@ -130,11 +131,10 @@ if(rgx.IsMatch(input)) //Additional validation
 ```
 #### References
 [CWE-643: Improper Neutralization of Data within XPath Expressions ('XPath Injection')](http://cwe.mitre.org/data/definitions/643.html)  
-[CERT: IDS09-J. Prevent XPath Injection (archive)](https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61407250)  
+[OWASP: XPATH Injection](https://www.owasp.org/index.php/XPATH_Injection)
 [Black Hat Europe 2012: Hacking XPath 2.0](http://media.blackhat.com/bh-eu-12/Siddharth/bh-eu-12-Siddharth-Xpath-WP.pdf)  
-[Balisage: XQuery Injection](http://www.balisage.net/Proceedings/vol7/html/Vlist02/BalisageVol7-Vlist02.html)  
-[WASC-39: XPath Injection](http://projects.webappsec.org/w/page/13246963/SQL%20Injection)  
-[OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)  
+[WASC-39: XPath Injection](http://projects.webappsec.org/w/page/13247005/XPath%20Injection)  
+
 <div id="SCS0007"></div>
 
 ### SCS0007 - XML eXternal Entity Injection (XXE)
@@ -1199,7 +1199,127 @@ public ActionResult LogOn(LogOnModel model, string returnUrl)
 [Microsoft: Preventing Open Redirection Attacks (C#)](https://docs.microsoft.com/en-us/aspnet/mvc/overview/security/preventing-open-redirection-attacks)  
 [OWASP: Unvalidated Redirects and Forwards Cheat Sheet](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet)  
 [Hacksplaining: preventing malicious redirects](https://www.hacksplaining.com/prevention/open-redirects)  
+<div id="SCS0028"></div>
+
+### SCS0028 - Insecure Deserialization
+Untrusted data passed for deserialization.
+#### Risk
+Arbitrary code execution, full application compromise or denial of service. An attacker may pass specially crafted serialized .NET object of specific class that will execute malicious code during the construction of the object.
+#### Vulnerable Code
+```cs
+private void ConvertData(string json)
+{
+    var mySerializer = new JavaScriptSerializer(new SimpleTypeResolver());
+    Object mything = mySerializer.Deserialize(json, typeof(SomeDataClass)/* the type doesn't matter */);
+}
+```
+#### Solution
+There is no simple fix. Do not deserialize untrusted data: user input, cookies or data that crosses trust boundaries.
+
+In case it is unavoidable:
+1) If serialization is done on the server side, then crosses trust boundary, but is not modified and is returned back (like cookie for example) - use signed cryptography (HMAC for instance) to ensure it wasn't tampered.
+2) Do not get the type to deserialize into from untrusted source: the serialized stream itself or other untrusted parameter. `BinaryFormatter` for example reads type information from serialized stream itself and can't be used with untrusted streams:
+```cs
+// DO NOT DO THIS!
+var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
+```
+JavaScriptSerializer for instance without a JavaScriptTypeResolver is safe because it doesn’t resolve types at all:
+```cs
+private void ConvertData(string json)
+{
+    var mySerializer = new JavaScriptSerializer(/* no resolver here */);
+    Object mything = mySerializer.Deserialize(json, typeof(SomeDataClass));
+}
+```
+Pass the expected type (may be hardcoded) to the deserialization library. Some libraries like Json.Net, DataContractJsonSerializer and FSPickler validate expected object graph before deserialization.
+However the check is not bulletproof if the expected type contains field or property of `System.Object` type somewhere nested in hierarchy.
+```cs
+// Json.net will inspect if the serialized data is the Expected type
+var data = JsonConvert.DeserializeObject<Expected>(json, new
+JsonSerializerSettings
+{
+    // Type information is not used, only simple types like int, string, double, etc. will be resolved
+    TypeNameHandling = TypeNameHandling.None
+});
+```
+```cs
+// DO NOT DO THIS! The cast to MyType happens too late, when malicious code was already executed
+var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
+```
+3) If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!):
+```cs
+class LimitedBinder : SerializationBinder
+{
+    List<Type> allowedTypes = new List<Type>()
+    {
+        typeof(Exception),
+        typeof(List<Exception>),
+    };
+
+    public override Type BindToType(string assemblyName, string typeName)
+    {
+        var type = Type.GetType(String.Format("{0}, {1}", typeName, assemblyName), true);
+        foreach(Type allowedType in allowedTypes)
+        {
+            if(type == allowedType)
+                return allowedType;
+        }
+
+        // Don’t return null for unexpected types –
+        // this makes some serializers fall back to a default binder, allowing exploits.
+        throw new Exception("Unexpected serialized type");
+    }
+}
+
+var formatter = new BinaryFormatter() { Binder = new LimitedBinder () };
+var data = (List<Exception>)formatter.Deserialize (fs);
+```
+Determining which types are safe is quite difficult, and this approach is not recommended unless necessary. There are many types that might allow non-RCE exploits if they are deserialized from untrusted data. Denial of service is especially common. As an example, the System.Collections.HashTable class is not safe to deserialize from an untrusted stream – the stream can specify the size of the internal “bucket” array and cause an out of memory condition.
+
+4) Serialize simple [Data Transfer Objects (DTO)](https://en.wikipedia.org/wiki/Data_transfer_object) only. Do not serialize/deserialize type information. For example, use only `TypeNameHandling.None` (the default) in Json.net:
+```cs
+class DataForStorage
+{
+    public string Id;
+    public int    Count;
+}
+
+var data = JsonConvert.SerializeObject<DataForStorage>(json, new
+JsonSerializerSettings
+{
+    TypeNameHandling = TypeNameHandling.None
+});
+```
+will produce the following JSON without type information that is perfectly fine to deserialize back:
+```
+{
+  "Id": null,
+  "Count": 0
+}
+```
+#### References
+[BlackHat USA 2017: Friday the 13th: JSON Attacks](https://www.blackhat.com/docs/us-17/thursday/us-17-Munoz-Friday-The-13th-Json-Attacks.pdf)  
+[BlueHat v17: Dangerous Contents - Securing .Net Deserialization](https://www.slideshare.net/MSbluehat/dangerous-contents-securing-net-deserialization)  
+[BlackHat USA 2012: Are you my type?](https://media.blackhat.com/bh-us-12/Briefings/Forshaw/BH_US_12_Forshaw_Are_You_My_Type_Slides.pdf)  
+[OWASP: Deserialization of untrusted data](https://www.owasp.org/index.php/Deserialization_of_untrusted_data)  
+[Deserialization payload generator for a variety of .NET formatters](https://github.com/pwntester/ysoserial.net)  
+[.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
+
 # Release Notes
+## 2.7.0
+[Insecure deserialization analyzers](#SCS0028) for multiple libraries and formatters:
+* [Json.NET](https://www.newtonsoft.com/json)
+* [BinaryFormatter](https://msdn.microsoft.com/en-us/library/system.runtime.serialization.formatters.binary.binaryformatter(v=vs.110).aspx)
+* [FastJSON](https://github.com/mgholam/fastJSON)
+* [JavaScriptSerializer](https://msdn.microsoft.com/en-us/library/system.web.script.serialization.javascriptserializer(v=vs.110).aspx)
+* [DataContractJsonSerializer](https://msdn.microsoft.com/en-us/library/system.runtime.serialization.json.datacontractjsonserializer(v=vs.110).aspx)
+* [NetDataContractSerializer](https://msdn.microsoft.com/en-us/library/system.runtime.serialization.netdatacontractserializer(v=vs.110).aspx)
+* [XmlSerializer](https://msdn.microsoft.com/en-us/library/system.xml.serialization.xmlserializer(v=vs.110).aspx)
+* and many more...
+
+Added warning for the usage of AllowHtml attribute.  
+Different input validation analyzer and CSRF analyzer improvements.
+
 ## 2.6.1
 Exceptions analyzing VB.NET projects fixed.
 
@@ -1228,3 +1348,4 @@ False positive fixes in:
 
 New features:
 * Open redirect detection.
+
