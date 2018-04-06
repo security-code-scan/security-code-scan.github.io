@@ -1248,31 +1248,7 @@ var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
 ```
 3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!):  
 ```cs
-class LimitedBinder : SerializationBinder
-{
-    List<Type> allowedTypes = new List<Type>()
-    {
-        typeof(Exception),
-        typeof(List<Exception>),
-    };
-
-    public override Type BindToType(string assemblyName, string typeName)
-    {
-        var type = Type.GetType(String.Format("{0}, {1}", typeName, assemblyName), true);
-        foreach(Type allowedType in allowedTypes)
-        {
-            if(type == allowedType)
-                return allowedType;
-        }
-
-        // Don’t return null for unexpected types –
-        // this makes some serializers fall back to a default binder, allowing exploits.
-        throw new Exception("Unexpected serialized type");
-    }
-}
-
-var formatter = new BinaryFormatter() { Binder = new LimitedBinder () };
-var data = (List<Exception>)formatter.Deserialize (fs);
+class LimitedBinder {}
 ```
 Determining which types are safe is quite difficult, and this approach is not recommended unless necessary. There are many types that might allow non Remote Code Execution exploits if they are deserialized from untrusted data. Denial of service is especially common. As an example, the System.Collections.HashTable class is not safe to deserialize from an untrusted stream – the stream can specify the size of the internal “bucket” array and cause an out of memory condition.
 
