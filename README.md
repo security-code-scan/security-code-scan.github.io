@@ -1248,7 +1248,7 @@ var thing = (MyType)new BinaryFormatter().Deserialize(untrustedStream);
 ```
 3. If the library supports implement a callback that verifies if the object and its properties are of expected type (don't blacklist, use whitelist!):
 ```cs
-class LimitedBinder : SerializationBinder
+private class LimitedBinder : SerializationBinder
 {
     List<Type> allowedTypes = new List<Type>()
     {
@@ -1271,7 +1271,7 @@ class LimitedBinder : SerializationBinder
     }
 }
 
-public void Deserialize()
+private void Deserialize()
 {
     var formatter = new BinaryFormatter() { Binder = new LimitedBinder () };
     var data = (List<Exception>)formatter.Deserialize (fs);
