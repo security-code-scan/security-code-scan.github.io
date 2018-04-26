@@ -37,6 +37,23 @@
                   $("#toc").tocify({ theme: "none",
                                      context: ".markdown-body",
                                      hashGenerator: tocifyHasher});
+                $(".tocify-item").on('click', function() {
+                  trackLink('anchor', $(this)[0].attributes["data-unique"].nodeValue);
+                });
+                $("a").each(function() {
+                    var href = $(this).attr("href");
+                    if(href != null) {
+                        $(this).on('click', function() {
+                            trackLink('outbound', $(this).attr("href"));
+                        });
+                    }
+                });
+                var trackLink = function(category, url) {
+                  gtag('event', 'click', {
+                    'event_category': category,
+                    'event_label': url
+                  });
+                }
               });
               hljs.initHighlightingOnLoad();
   </script>
