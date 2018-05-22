@@ -1305,6 +1305,11 @@ will produce the following JSON without type information that is perfectly fine 
 [Deserialization payload generator for a variety of .NET formatters](https://github.com/pwntester/ysoserial.net)  
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
 # Release Notes
+## 2.7.1
+Couple of issues related to VB.NET fixed:
+* VB.NET projects were not analyzed when using the analyzer from NuGet.
+* 'Could not load file or assembly 'Microsoft.CodeAnalysis.VisualBasic, Version=1.0.0.0...' when building C# .NET Core projects from command line with dotnet.exe
+
 ## 2.7.0
 [Insecure deserialization analyzers](#SCS0028) for multiple libraries and formatters:
 * [Json.NET](https://www.newtonsoft.com/json)
