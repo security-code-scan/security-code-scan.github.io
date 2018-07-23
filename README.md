@@ -6,11 +6,11 @@
 
 <span class="octicon octicon-tools"/> One click refactoring for some vulnerabilities.
 
-<span class="octicon octicon-code"/> Analyzes .NET and [.NET Core](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core) projects in a background (intellisense) or during a build.
+<span class="octicon octicon-code"/> Analyzes .NET and [.NET Core](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core) projects in a background (IntelliSense) or during a build.
 
-<span class="octicon octicon-pulse"/> Continuous Integration (CI) through [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
+<span class="octicon octicon-pulse"/> Continuous Integration (CI) through [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx). For Unix CI runners please use [VS2017 nuget package](https://www.nuget.org/packages/SecurityCodeScan.VS2017).
 
-<span class="octicon octicon-plug"/> Works with Visual Studio 2015 or higher. Visual Studio [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx), Professional and Enterprise editions are supported.
+<span class="octicon octicon-plug"/> Works with Visual Studio 2015 or higher. Visual Studio [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx), Professional and Enterprise editions are supported. Other editors that support Roslyn based analyzers like Rider or OmniSharp should work too.
 
 <span class="octicon octicon-mark-github"/> [Open Source](https://github.com/security-code-scan/security-code-scan)
 
@@ -21,16 +21,18 @@ Security Code Scan (SCS) can be installed as:
   * Right-click on the root item in your solution. Select "Manage NuGet Packages for Solution...". Select "Browse" on the top and search for Security Code Scan. Select project you want to install into and click "Install".
   * Another option is to install the package into all projects in a solution: use "Tools > NuGet Package Manager > Package Manager Console". Run the command `Get-Project -All | Install-Package SecurityCodeScan`.
 
-Installing it as NuGet package gives an advantage to choose projects in a solution that should be analyzed. It is a good idea to exclude test projects, because they do not make it into a final product. However it requires discipline to install SCS into every solution a developer works with. Installing it as a Visual Studio extension is a single install action.
+Installing it as NuGet package gives an advantage to choose projects in a solution that should be analyzed. It is a good idea to exclude test projects, because they do not make it into a final product. However it requires discipline to install SCS into every solution a developer works with (Unfortunately netstandard projects propagate the analyzer to all dependent projects, so you may need to use other means to filter the results). Installing it as a Visual Studio extension is a single install action.
 
-Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on only the NuGet version runs during a build (VS extension provides intellisense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
+Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on only the NuGet version runs during a build (VS extension provides IntelliSense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
+
 # Configuration
 ## Full Solution Analysis
 *Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
 
-![Full Solution Analysis](images/fullsolution.png)
-## Analyzing Config Files
-To enable analysis of config files you need to modify all C#(.csproj) and VB.NET(.vbproj) projects in a solution and add "AdditionalFileItemNames" element as shown below:
+![Full Solution Analysis](images/fullsolution.png)  
+Since *Full solution analysis* for IntelliSense has performance impact this is another reason to use SCS during a build only as a nuget instead of Visual Studio extension.
+## Analyzing .aspx and web.config Files
+To enable analysis of these files you need to modify all C#(.csproj) and VB.NET(.vbproj) projects in a solution and add "AdditionalFileItemNames" element as shown below:
 ```xml
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
@@ -60,6 +62,33 @@ $content.Save($_)
 (Get-Content $_ -Encoding UTF8) | Set-Content $_ -Encoding UTF8
 }
 ```
+## External Configuration Files
+There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize built-in settings from https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml or add your specific Sinks and Behaviors. Global settings file location is %LocalAppData%\SecurityCodeScan\config-1.0.yml
+An example of config-1.0.yml:
+```
+CsrfProtectionAttributes:
+  -  HttpMethodsNameSpace: MyCompany.AspNetCore.Mvc
+     AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
+```
+
+For project specific settings add SecurityCodeScan.config.yml into a project. Go to file properties and set the Build Action to AdditionalFiles:
+
+![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
+
+An example of SecurityCodeScan.config.yml:
+```
+Version: 1.0
+Sinks:
+  MyKey:
+    Namespace: MyNamespace
+    ClassName: Test
+    Member: method
+    Name: VulnerableFunctionName
+    InjectableArguments: [0]
+    Locale: SCS0001
+```
+## Audit Mode
+Audit mode is off by default. It can be turned on in an external configuration file to get warnings with more false positives.
 ## Testing on WebGoat.NET
 Download an intentionally vulnerable project [WebGoat.NET](https://github.com/OWASP/WebGoat.NET/zipball/master) for testing. Open the solution. If you have installed SCS as a VS extension you should see warning after few seconds in the "Errors" tab. Make sure IntelliSense results are not filtered in the window:
 
@@ -447,8 +476,11 @@ using System.Security.Cryptography;
 var rnd = RandomNumberGenerator.Create();
 ```
 #### References
-[WASC-04: Insufficient Transport Layer Protection](http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection)  
-[CWE-295: Improper Certificate Validation](http://cwe.mitre.org/data/definitions/295.html)  
+[OWASP: Insecure Randomness](https://www.owasp.org/index.php/Insecure_Randomness)  
+[CWE-330: Use of Insufficiently Random Values](https://cwe.mitre.org/data/definitions/330.html)  
+[CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)  
+[CWE-331: Insufficient Entropy](https://cwe.mitre.org/data/definitions/331.html)  
+
 <div id="SCS0006"></div>
 
 ### SCS0006 - Weak hashing function
@@ -856,6 +888,7 @@ Explicitly set to `Always` and encrypt with with the .NET [machine key](https://
 ```
 #### References
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
+[MSDN: ViewStateEncryptionMode Property](https://msdn.microsoft.com/en-us/library/system.web.configuration.pagessection.viewstateencryptionmode(v=vs.100).aspx)  
 [MSDN: machineKey Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/w8h3skw9(v=vs.100).aspx)  
 <div id="SCS0024"></div>
 
@@ -946,6 +979,34 @@ Or set it explicitly:
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
 [OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
+See [XSS](#SCS0029) references.  
+<div id="SCS0030"></div>
+
+### SCS0030 - Request validation is enabled only for pages (Configuration File)
+The `requestValidationMode` which provides additional protection against [XSS](#SCS0029) is enabled only for pages, not for all HTTP requests in configuration file.
+#### Risk
+[XSS](#SCS0029)
+#### Vulnerable Code
+```xml
+<system.web>
+   ...
+   <httpRuntime [..] requestValidationMode="2.0" [..]/>
+   ...
+</system.web>
+```
+#### Solution
+```xml
+<system.web>
+   ...
+   <httpRuntime [..] requestValidationMode="4.5" [..]/>
+   ...
+</system.web>
+```
+#### References
+[MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
+[MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
+[OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
+[MSDN: RequestValidationMode Property](https://msdn.microsoft.com/en-us/library/system.web.configuration.httpruntimesection.requestvalidationmode(v=vs.110).aspx)  
 See [XSS](#SCS0029) references.  
 ## Password Management
 <div id="SCS0015"></div>
@@ -1304,7 +1365,39 @@ will produce the following JSON without type information that is perfectly fine 
 [OWASP: Deserialization of untrusted data](https://www.owasp.org/index.php/Deserialization_of_untrusted_data)  
 [Deserialization payload generator for a variety of .NET formatters](https://github.com/pwntester/ysoserial.net)  
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
+
 # Release Notes
+## 2.8.0
+Bad news: this release will no longer run on Unix machines.
+Good news: for Continuous Integration builds on Unix use https://www.nuget.org/packages/SecurityCodeScan.VS2017 nuget package.
+
+Added external configuration files: per user account and per project. It allows you to customize settings from https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml or add your specific Sinks and Behaviors. Global settings file location is %LocalAppData%\SecurityCodeScan\config-1.0.yml
+An example of config-1.0.yml:
+```
+CsrfProtectionAttributes:
+  -  HttpMethodsNameSpace: MyCompany.AspNetCore.Mvc
+     AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
+```
+
+For project specific settings add SecurityCodeScan.config.yml into a project. Go to file properties and set the Build Action to AdditionalFiles:
+
+![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
+
+An example of SecurityCodeScan.config.yml:
+```
+Version: 1.0
+Sinks:
+  MyKey:
+    Namespace: MyNamespace
+    ClassName: Test
+    Member: method
+    Name: VulnerableFunctionName
+    InjectableArguments: [0]
+    Locale: SCS0001
+```
+
+Audit Mode setting (Off by default) was introduced for those interested in warnings with more false positives.
+
 ## 2.7.1
 Couple of issues related to VB.NET fixed:
 * VB.NET projects were not analyzed when using the analyzer from NuGet.
