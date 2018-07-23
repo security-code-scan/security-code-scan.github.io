@@ -8,7 +8,7 @@
 
 <span class="octicon octicon-code"/> Analyzes .NET and [.NET Core](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core) projects in a background (IntelliSense) or during a build.
 
-<span class="octicon octicon-pulse"/> Continuous Integration (CI) through [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx). For Unix CI runners please use [VS2017 nuget package](https://www.nuget.org/packages/SecurityCodeScan.VS2017).
+<span class="octicon octicon-pulse"/> Continuous Integration (CI) through [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx). For Unix CI runners please use [VS2017 nuget package](https://www.nuget.org/packages/SecurityCodeScan.VS2017). See [Continuous Integration Builds section](#continuous-integration-builds) for instructions.
 
 <span class="octicon octicon-plug"/> Works with Visual Studio 2015 or higher. Visual Studio [Community](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx), Professional and Enterprise editions are supported. Other editors that support Roslyn based analyzers like Rider or OmniSharp should work too.
 
@@ -23,7 +23,17 @@ Security Code Scan (SCS) can be installed as:
 
 Installing it as NuGet package gives an advantage to choose projects in a solution that should be analyzed. It is a good idea to exclude test projects, because they do not make it into a final product. However it requires discipline to install SCS into every solution a developer works with (Unfortunately netstandard projects propagate the analyzer to all dependent projects, so you may need to use other means to filter the results). Installing it as a Visual Studio extension is a single install action.
 
-Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on only the NuGet version runs during a build (VS extension provides IntelliSense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
+Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on, only the NuGet version runs during a build (VS extension provides IntelliSense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
+
+## Continuous Integration Builds
+If the CI server of your choice is using MSBuild integration of SCS is just a matter of adding NuGet packages and collecting the output from the build. SCS warnings are in the form of  
+`[source file](line,column): warning SCS[rule id]: [warning description] [project_file]`  
+If your CI server doesn't support MSBuild, here is an example how it can be scripted to use Docker container for building:  
+* `git clone` or copy by other means the sources to a local directory.
+* `docker run -ti --rm --volume $PWD/SourcesFolderName:/tmp/app -w /tmp/app microsoft/dotnet:2.0-sdk`
+* `dotnet add src/SourcesFolderName/ProjectName.csproj package SecurityCodeScanVS2017` to reference SCS NuGet package in specific project file. Repeat for every project you want to analyze. Strictly speaking the step is not necessary if the SCS NuGet package is already referenced in project during development.
+* `dotnet build`
+* Grep the output.
 
 # Configuration
 ## Full Solution Analysis
@@ -1368,8 +1378,7 @@ will produce the following JSON without type information that is perfectly fine 
 
 # Release Notes
 ## 2.8.0
-Bad news: this release will no longer run on Unix machines.  
-Good news: for Continuous Integration builds on Unix use the [VS2017 nuget package](https://www.nuget.org/packages/SecurityCodeScan.VS2017).
+**Important:** This release targets full .NET framework and **may** not run on Unix machines. Although as tested it runs fine in [microsoft/dotnet 2.1 docker container](https://hub.docker.com/r/microsoft/dotnet/) on Linux, still for Unix based Continuous Integration builds it is better to use [SecurityCodeScan.VS2017 nuget package](https://www.nuget.org/packages/SecurityCodeScan.VS2017), that targets netstandard.
 
 Added external configuration files: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 An example of config-1.0.yml:
