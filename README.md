@@ -73,7 +73,7 @@ $content.Save($_)
 }
 ```
 ## External Configuration Files
-There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize built-in settings from https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
+There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 An example of config-1.0.yml:
 ```
 CsrfProtectionAttributes:
@@ -107,6 +107,18 @@ Download an intentionally vulnerable project [WebGoat.NET](https://github.com/OW
 If SCS is installed as NuGet package you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
 
 ![Intellisense](images/output.png)
+## Suppressing and Fixing the Warnings
+If *Code Fixer* is not implemented for the warning the link "Show potential fixes" won't work. For many warnings there are too many options to resolve the issue, so the code has to be modified manually.
+If the warning is false positive it can be suppressed that is [standard functionality for Visual Studio](https://docs.microsoft.com/en-us/visualstudio/code-quality/in-source-suppression-overview) howerver the UI not very intuitive, because you have to click on the underlined piece of code, only then a bubble appears at the beginning of the line where suppress menu is available:
+
+![Suppress](https://i.stack.imgur.com/Gne1p.png)
+
+Another place where the menu is available is *Error List*:
+
+![Suppress](https://i.stack.imgur.com/oLWSt.png)
+
+It is possible to filter shown item in *Error List* by different criterias: warning id, project name, etc.
+You can permanently suppress entire warning type for a project by setting it's warning id severity to *None*.
 ## Severity
 Each warning severity is configurable: expand References > Analyzers > SecurityCodeScan under the project in a Solution window, right click on a warning ID and modify the severity. WebGoat.NET.ruleset will be automatically saved in the project's directory:
 
