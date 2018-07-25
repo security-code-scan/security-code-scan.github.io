@@ -92,10 +92,6 @@ Visual Studio-like style based on original C# coloring based on work of Jason Di
     color: #a31515;
 }
 
-.language-json .hljs-number {
-    color: #5ec4b1;
-}
-
 .language-yml .hljs-attr {
     color: #a31515;
 }
