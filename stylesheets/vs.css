@@ -4,7 +4,7 @@ Visual Studio-like style based on original C# coloring based on work of Jason Di
 
 */
 .hljs-comment {
-  color: #008000;
+    color: #008000;
 }
 
 .hljs-pscommand,
@@ -12,15 +12,15 @@ Visual Studio-like style based on original C# coloring based on work of Jason Di
 .hljs-selector-tag,
 .hljs-built_in,
 .hljs-tag {
-  color: #0101FD;
+    color: #0101FD;
 }
 
 .hljs-name {
-  color: #a2152a;
+    color: #a2152a;
 }
 
 .hljs-literal {
-  color: #0101FD;
+    color: #0101FD;
 }
 
 .hljs-string,
@@ -29,7 +29,7 @@ Visual Studio-like style based on original C# coloring based on work of Jason Di
 .hljs-template-variable,
 .hljs-deletion,
 .hljs-code {
-  color: #a31515;
+    color: #a31515;
 }
 
 .hljs-parameter,
@@ -40,50 +40,66 @@ Visual Studio-like style based on original C# coloring based on work of Jason Di
 .hljs-selector-attr,
 .hljs-selector-pseudo,
 .hljs-meta {
-  color: #007d9a;
+    color: #007d9a;
 }
 
 .hljs-doctag {
-  color: #737373;
+    color: #737373;
 }
 
 .hljs-attr {
-  color: #f00;
+    color: #f00;
 }
 
 .hljs-control {
-  color: #af00db;
+    color: #af00db;
 }
 
 .hljs-helper {
-  color: #795e26;
+    color: #795e26;
 }
 
 .hljs-symbol,
 .hljs-bullet,
 .hljs-link {
-  color: #00b0e8;
+    color: #00b0e8;
 }
 
 .hljs-emphasis {
-  font-style: italic;
+    font-style: italic;
 }
 
 .hljs-strong {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .hljs-reserved,
 .hljs-constant {
-  color: #cd3131;
+    color: #cd3131;
 }
 
 .line-highlight {
-  margin: 0 -12px;
-  padding: 1px 12px;
-  background-color: #ffc;
+    margin: 0 -12px;
+    padding: 1px 12px;
+    background-color: #ffc;
 }
 
 .language-xml .hljs-string {
-  color: #0000ff;
+    color: #0000ff;
+}
+
+.language-json .hljs-attr {
+    color: #a31515;
+}
+
+.language-json .hljs-number {
+    color: #5ec4b1;
+}
+
+.language-yml .hljs-attr {
+    color: #a31515;
+}
+
+.language-yml .hljs-string {
+    color: #000000;
 }
