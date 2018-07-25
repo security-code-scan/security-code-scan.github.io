@@ -15,13 +15,20 @@
 <span class="octicon octicon-mark-github"/> [Open Source](https://github.com/security-code-scan/security-code-scan)
 
 # Installation
-Security Code Scan (SCS) can be installed as:
+Security Code Scan (SCS) [can be installed as](https://docs.microsoft.com/en-us/visualstudio/code-quality/install-roslyn-analyzers):
 * [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=JaroslavLobacevski.SecurityCodeScan). Use the link or open "Tools > Extensions and Updates..." Select "Online" in the tree on the left and search for SecurityCodeScan in the right upper field. Click "Download" and install.
 * [NuGet package](https://www.nuget.org/packages/SecurityCodeScan/).
   * Right-click on the root item in your solution. Select "Manage NuGet Packages for Solution...". Select "Browse" on the top and search for Security Code Scan. Select project you want to install into and click "Install".
   * Another option is to install the package into all projects in a solution: use "Tools > NuGet Package Manager > Package Manager Console". Run the command `Get-Project -All | Install-Package SecurityCodeScan`.
 
-Installing it as NuGet package gives an advantage to choose projects in a solution that should be analyzed. It is a good idea to exclude test projects, because they do not make it into a final product. However it requires discipline to install SCS into every solution a developer works with (Unfortunately netstandard projects propagate the analyzer to all dependent projects, so you may need to use other means to filter the results). Installing it as a Visual Studio extension is a single install action.
+Installing it as NuGet package gives an advantage to choose projects in a solution that should be analyzed. It is a good idea to exclude test projects, because they do not make it into a final product.  
+> :warning:Note:
+> In a .NET Core project, if you add a reference to a project that has SCS as a NuGet package, it is automatically added to the dependent project too. To disable this behavior, for example if the dependent project is a unit test project, mark the NuGet package as private in the *.csproj* or *.vbproj* file of the referenced project:
+>
+> ```xml
+> <PackageReference Include="SecurityCodeScan" Version="2.8.0" PrivateAssets="all" />
+> ```
+However it requires discipline to install SCS into every solution a developer works with. Installing it as a Visual Studio extension is a single install action.
 
 Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on, only the NuGet version runs during a build (VS extension provides IntelliSense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
 
@@ -40,7 +47,7 @@ If your CI server doesn't support MSBuild, here is an example how it can be scri
 *Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
 
 ![Full Solution Analysis](images/fullsolution.png)  
-Since *Full solution analysis* for IntelliSense has performance impact this is another reason to use SCS during a build only as a NuGet instead of Visual Studio extension.
+Since *Full solution analysis* for IntelliSense has performance impact this is another reason to use SCS during a build only as a NuGet instead of Visual Studio extension. Microsoft has some [additional information](https://docs.microsoft.com/en-us/visualstudio/code-quality/how-to-enable-and-disable-full-solution-analysis-for-managed-code) on the configuration option.
 ## Analyzing .aspx and web.config Files
 To enable analysis of these files you need to modify all C#(.csproj) and VB.NET(.vbproj) projects in a solution and add "AdditionalFileItemNames" element as shown below:
 ```xml
@@ -75,7 +82,7 @@ $content.Save($_)
 ## External Configuration Files
 There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 An example of config-1.0.yml:
-```
+```yml
 CsrfProtectionAttributes:
   -  HttpMethodsNameSpace: MyCompany.AspNetCore.Mvc
      AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
@@ -86,7 +93,7 @@ For project specific settings add SecurityCodeScan.config.yml into a project. Go
 ![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
 
 An example of SecurityCodeScan.config.yml:
-```
+```yml
 Version: 1.0
 Sinks:
   MyKey:
@@ -109,7 +116,7 @@ If SCS is installed as NuGet package you'll need to build the solution. Then you
 ![Intellisense](images/output.png)
 ## Suppressing and Fixing the Warnings
 If *Code Fixer* is not implemented for the warning the link "Show potential fixes" won't work. For many warnings there are too many options to resolve the issue, so the code has to be modified manually.
-If the warning is false positive it can be suppressed that is [standard functionality for Visual Studio](https://docs.microsoft.com/en-us/visualstudio/code-quality/in-source-suppression-overview) howerver the UI not very intuitive, because you have to click on the underlined piece of code, only then a bubble appears at the beginning of the line where suppress menu is available:
+If the warning is false positive it can be suppressed that is [standard functionality for Visual Studio](https://docs.microsoft.com/en-us/visualstudio/code-quality/in-source-suppression-overview) however the UI not very intuitive, because you have to click on the underlined piece of code, only then a bubble appears at the beginning of the line where suppress menu is available:
 
 ![Suppress](https://i.stack.imgur.com/Gne1p.png)
 
@@ -117,8 +124,8 @@ Another place where the menu is available is *Error List*:
 
 ![Suppress](https://i.stack.imgur.com/oLWSt.png)
 
-It is possible to filter shown item in *Error List* by different criterias: warning id, project name, etc.
-You can permanently suppress entire warning type for a project by setting it's warning id severity to *None*.
+It is possible to filter shown item in *Error List* by different criteria: warning id, project name, etc.
+You can permanently suppress entire warning type for a project by setting it's warning id severity to *None*. Microsoft has [it's own documentation](https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers) about suppressions, rule sets and severities.
 ## Severity
 Each warning severity is configurable: expand References > Analyzers > SecurityCodeScan under the project in a Solution window, right click on a warning ID and modify the severity. WebGoat.NET.ruleset will be automatically saved in the project's directory:
 
@@ -881,7 +888,7 @@ cookie.HttpOnly = true; //Add this flag
 ### SCS0023 - View State Not Encrypted
 The `viewStateEncryptionMode` is not set to `Always` in configuration file.
 #### Risk
-Web Forms controls use hidden base64 encoded fields to store state information. If sensitve information is stored there it may be leaked to the client side.
+Web Forms controls use hidden base64 encoded fields to store state information. If sensitive information is stored there it may be leaked to the client side.
 #### Vulnerable Code
 The default value is `Auto`:
 ```xml
