@@ -83,7 +83,7 @@ $content.Save($_)
 ## External Configuration Files
 There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 An example of user's config-1.0.yml with custom Anti CSRF token:
-```
+```yml
 CsrfProtectionAttributes:
   -  HttpMethodsNameSpace: MyCompany.AspNetCore.Mvc
      AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
@@ -94,7 +94,7 @@ For project specific settings add SecurityCodeScan.config.yml into a project. Go
 ![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
 
 An example of SecurityCodeScan.config.yml with custom sink function (method that shouldn't be called with untrusted data without first being sanitized):
-```
+```yml
 Version: 1.0
 Sinks:
   UniqueKey:
@@ -1382,7 +1382,7 @@ JsonSerializerSettings
 });
 ```
 will produce the following JSON without type information that is perfectly fine to deserialize back:
-```
+```json
 {
   "Id": null,
   "Count": 0
@@ -1402,7 +1402,7 @@ will produce the following JSON without type information that is perfectly fine 
 
 Added external configuration files: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 An example of user's config-1.0.yml with custom Anti CSRF token:
-```
+```yml
 CsrfProtectionAttributes:
   -  HttpMethodsNameSpace: MyCompany.AspNetCore.Mvc
      AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
@@ -1413,7 +1413,7 @@ For project specific settings add SecurityCodeScan.config.yml into a project. Go
 ![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
 
 An example of SecurityCodeScan.config.yml with custom sink function (method that shouldn't be called with untrusted data without first being sanitized):
-```
+```yml
 Version: 1.0
 Sinks:
   UniqueKey:
