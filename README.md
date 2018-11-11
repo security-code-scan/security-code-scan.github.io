@@ -310,6 +310,39 @@ public class TestController : Controller
 [OWASP: XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet)  
 [OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)](https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29)  
 [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](http://cwe.mitre.org/data/definitions/79.html)  
+<div id="SCS0031"></div>
+
+### SCS0031 - LDAP Injection
+The dynamic value passed to the LDAP query should be validated.
+#### Risk
+If the user input is not properly filtered, a malicious user could extend the LDAP query.
+#### Vulnerable Code
+```cs
+var searcher = new DirectorySearcher();
+searcher.Filter = "(cn=" + input + ")";
+```
+or
+```cs
+var dir = new DirectoryEntry();
+dir.Path = $"GC://DC={input},DC=com";
+```
+#### Solution
+Use proper encoder (`LdapFilterEncode` or `LdapDistinguishedNameEncode`) from [AntiXSS library](https://www.nuget.org/packages/AntiXSS/):
+```cs
+var searcher = new DirectorySearcher();
+searcher.Filter = "(cn=" + Encoder.LdapFilterEncode(input) + ")";
+```
+or
+```cs
+var dir = new DirectoryEntry();
+dir.Path = $"GC://DC={Encoder.LdapDistinguishedNameEncode(input)},DC=com";
+```
+#### References
+[OWASP: LDAP Injection](https://www.owasp.org/index.php/LDAP_injection)  
+[OWASP: LDAP Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet)  
+[MSDN Blog - Security Tools: LDAP Injection and mitigation](https://blogs.msdn.microsoft.com/securitytools/2009/08/10/ldap-injection-and-mitigation/)  
+[WASC-29: LDAP Injection](http://projects.webappsec.org/w/page/13246947/LDAP%20Injection)  
+[CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')](https://cwe.mitre.org/data/definitions/90.html)  
 ## SQL Injection
 SQL injection flaws are introduced when software developers create dynamic database queries that include user supplied input.
 #### Risk
@@ -920,6 +953,7 @@ Explicitly set to `Always` and encrypt with with the .NET [machine key](https://
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: ViewStateEncryptionMode Property](https://msdn.microsoft.com/en-us/library/system.web.configuration.pagessection.viewstateencryptionmode(v=vs.100).aspx)  
 [MSDN: machineKey Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/w8h3skw9(v=vs.100).aspx)  
+
 <div id="SCS0024"></div>
 
 ### SCS0024 - View State MAC Disabled
