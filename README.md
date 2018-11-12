@@ -496,6 +496,43 @@ cmd.Parameters.AddWithValue("username", username);
 #### References
 [SqlCommand Class Documentation](https://msdn.microsoft.com/en-us/library/system.data.sqlclient.sqlcommand(v=vs.110).aspx)  
 [See references in the main SQL Injection section](#SQLInjection)  
+<div id="SCS0035"></div>
+
+### SCS0035 - SQL Injection (Entity Framework)
+Use parametrized queries to mitigate SQL injection.
+#### Vulnerable Code
+```cs
+var cmd = "SELECT * FROM Users WHERE username = '" + input + "' and role='user'";
+ctx.Database.ExecuteSqlCommand(
+    cmd);
+```
+#### Solution
+```cs
+var cmd = "SELECT * FROM Users WHERE username = @username and role='user'";
+ctx.Database.ExecuteSqlCommand(
+    cmd,
+    new SqlParameter("@username", input));
+```
+#### References
+[Entity Framework Documentation](https://msdn.microsoft.com/en-us/library/gg696172(v=vs.103).aspx)  
+[See references in the main SQL Injection section](#SQLInjection)  
+<div id="SCS0036"></div>
+
+### SCS0036 - SQL Injection (EnterpriseLibrary.Data)
+Use parametrized queries to mitigate SQL injection.
+#### Vulnerable Code
+```cs
+db.ExecuteDataSet(CommandType.Text, "SELECT * FROM Users WHERE username = '" + input + "' and role='user'");
+```
+#### Solution
+```cs
+DbCommand cmd = db.GetSqlStringCommand("SELECT * FROM Users WHERE username = @username and role='user'");
+db.AddInParameter(cmd, "@username", DbType.String, input);
+db.ExecuteDataSet(cmd);
+```
+#### References
+[Microsoft.Practices.EnterpriseLibrary.Data.Sql Namespace](https://docs.microsoft.com/en-us/previous-versions/msp-n-p/bb689524(v%3dpandp.31))  
+[See references in the main SQL Injection section](#SQLInjection)  
 ## Cryptography
 <div id="SCS0004"></div>
 
