@@ -26,7 +26,7 @@ Installing it as NuGet package gives an advantage to choose projects in a soluti
 > In a .NET Core project, if you add a reference to a project that has SCS as a NuGet package, it is automatically added to the dependent project too. To disable this behavior, for example if the dependent project is a unit test project, mark the NuGet package as private in the *.csproj* or *.vbproj* file of the referenced project:
 >
 > ```xml
-> <PackageReference Include="SecurityCodeScan" Version="2.8.0" PrivateAssets="all" />
+> <PackageReference Include="SecurityCodeScan" Version="3.0.0" PrivateAssets="all" />
 > ```
 
 However it requires discipline to install SCS into every solution a developer works with. Installing it as a Visual Studio extension is a single install action.
@@ -49,6 +49,16 @@ If your CI server doesn't support MSBuild, here is an example how it can be scri
 
 ![Full Solution Analysis](images/fullsolution.png)  
 Since *Full solution analysis* for IntelliSense has performance impact this is another reason to use SCS during a build only as a NuGet instead of Visual Studio extension. Microsoft has some [additional information](https://docs.microsoft.com/en-us/visualstudio/code-quality/how-to-enable-and-disable-full-solution-analysis-for-managed-code) on the configuration option.
+
+## Testing on WebGoat.NET
+Download an intentionally vulnerable project [WebGoat.NET](https://github.com/OWASP/WebGoat.NET/zipball/master) for testing. Open the solution. If you have installed SCS as a VS extension you should see warning after few seconds in the "Errors" tab. Make sure IntelliSense results are not filtered in the window:
+
+![Intellisense](images/intellisense.png)
+
+If SCS is installed as NuGet package you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
+
+![Intellisense](images/output.png)
+
 ## Analyzing .aspx and web.config Files
 To enable analysis of these files you need to modify all C#(.csproj) and VB.NET(.vbproj) projects in a solution and add "AdditionalFileItemNames" element as shown below:
 ```xml
@@ -80,41 +90,42 @@ $content.Save($_)
 (Get-Content $_ -Encoding UTF8) | Set-Content $_ -Encoding UTF8
 }
 ```
+
 ## External Configuration Files
-There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
-An example of user's config-1.0.yml with custom Anti CSRF token:
+There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add new rules. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-2.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
+
+For project specific settings add SecurityCodeScan.config.yml into a project. Go to file properties and set the Build Action to AdditionalFiles:
+
+![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
+
+### Custom taint source, sinks, sanitizers and validators
+
+An example of user's (per OS user) config-2.0.yml with custom Anti CSRF token:
+
 ```yml
 CsrfProtectionAttributes:
   -  HttpMethodsNameSpace: Microsoft.AspNetCore.Mvc
      AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
 ```
 
-For project specific settings add SecurityCodeScan.config.yml into a project. Go to file properties and set the Build Action to AdditionalFiles:
+An example of SecurityCodeScan.config.yml (per project) with custom sink function (method that shouldn't be called with untrusted data without first being sanitized):
 
-![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
-
-An example of SecurityCodeScan.config.yml with custom sink function (method that shouldn't be called with untrusted data without first being sanitized):
 ```yml
-Version: 1.0
-Sinks:
+Version: 2.0
+
+Behavior:
   UniqueKey:
     Namespace: MyNamespace
     ClassName: Test
-    Member: method
     Name: VulnerableFunctionName
-    InjectableArguments: [0]
-    Locale: SCS0001
+    InjectableArguments: [SCS0001: [0: HtmlEscaped]]
 ```
-## Audit Mode
-Audit mode is off by default. It can be turned on in an external configuration file to get warnings with more false positives.
-## Testing on WebGoat.NET
-Download an intentionally vulnerable project [WebGoat.NET](https://github.com/OWASP/WebGoat.NET/zipball/master) for testing. Open the solution. If you have installed SCS as a VS extension you should see warning after few seconds in the "Errors" tab. Make sure IntelliSense results are not filtered in the window:
 
-![Intellisense](images/intellisense.png)
+See the [configuration file](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) for comments and examples of usage.  
 
-If SCS is installed as NuGet package you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
+### Audit Mode
+Audit mode is off by default. It can be turned on in an external configuration file to get more potentially false positive warnings about data with unknown taint state.
 
-![Intellisense](images/output.png)
 ## Suppressing and Fixing the Warnings
 If *Code Fixer* is not implemented for the warning the link "Show potential fixes" won't work. For many warnings there are too many options to resolve the issue, so the code has to be modified manually.
 If the warning is false positive it can be suppressed that is [standard functionality for Visual Studio](https://docs.microsoft.com/en-us/visualstudio/code-quality/in-source-suppression-overview) however the UI not very intuitive, because you have to click on the underlined piece of code, only then a bubble appears at the beginning of the line where suppress menu is available:
@@ -127,10 +138,12 @@ Another place where the menu is available is *Error List*:
 
 It is possible to filter shown item in *Error List* by different criteria: warning id, project name, etc.
 You can permanently suppress entire warning type for a project by setting it's warning id severity to *None*. Microsoft has [it's own documentation](https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers) about suppressions, rule sets and severities.
+
 ## Severity
 Each warning severity is configurable: expand References > Analyzers > SecurityCodeScan under the project in a Solution window, right click on a warning ID and modify the severity. WebGoat.NET.ruleset will be automatically saved in the project's directory:
 
 ![Intellisense](images/severity.png)
+
 ## Troubleshooting
 If no SCS warnings are displayed, temporarily disable other installed analyzers. A buggy analyzer may [affect results from other analyzers](https://github.com/dotnet/roslyn/issues/23879).
 
@@ -515,6 +528,9 @@ ctx.Database.ExecuteSqlCommand(
 ```
 #### References
 [Entity Framework Documentation](https://msdn.microsoft.com/en-us/library/gg696172(v=vs.103).aspx)  
+[Execute Raw SQL Queries in Entity Framework 6](http://www.entityframeworktutorial.net/entityframework4.3/raw-sql-query-in-entity-framework.aspx)  
+[Executing Raw SQL Queries in Entity Framework Core](https://www.learnentityframeworkcore.com/raw-sql)  
+[Bobby Tables: A guide to preventing SQL injection > Entity Framework](http://bobby-tables.com/adodotnet_ef)  
 [See references in the main SQL Injection section](#SQLInjection)  
 <div id="SCS0036"></div>
 
@@ -1467,34 +1483,21 @@ will produce the following JSON without type information that is perfectly fine 
 [Deserialization payload generator for a variety of .NET formatters](https://github.com/pwntester/ysoserial.net)  
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
 
-# Release Notes
+﻿# Release Notes
+## 3.0.0
+This is a major release that introduces configurable taint sources, sanitizers and validators. Configuration file schema version has changed to 2.0, so if you had custom config settings, you'll need to adjust to the schema and bump your file name from `config-1.0.yml` to `config-2.0.yml` or change from `Version: 1.0` to `Version: 2.0` if it was added to a project.  
+With the introduction of taint sources and taint entry points warning are shown only for the tainted data. Unknowns are reported only in the Audit Mode.  
+Multiple improvements and fixes were done to Taint, Anti-CSRF token, XSS, SQL injection, Path traversal, XPath injection, Certificate validation analyzers.  
+New LDAP injection detection was added.  
+An issue was fixed that could surface as `Session Terminated unexpectedly. Disabling 'Security Code Scan' might help prevent...`.
+
+I would like to thank all [contributors](https://github.com/security-code-scan/security-code-scan/graphs/contributors) to this and previous releases. Also to everyone who has reported [issues or feature requests](https://github.com/security-code-scan/security-code-scan/issues?utf8=%E2%9C%93&q=is%3Aissue).  
+
 ## 2.8.0
 **Important:** This release targets full .NET framework and **may** not run on Unix machines. Although as tested it runs fine in [microsoft/dotnet 2.1 docker container](https://hub.docker.com/r/microsoft/dotnet/) on Linux, still for Unix based Continuous Integration builds it is better to use [SecurityCodeScan.VS2017 NuGet package](https://www.nuget.org/packages/SecurityCodeScan.VS2017), that targets netstandard.
 
-Added external configuration files: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-1.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
-An example of user's config-1.0.yml with custom Anti CSRF token:
-```yml
-CsrfProtectionAttributes:
-  -  HttpMethodsNameSpace: Microsoft.AspNetCore.Mvc
-     AntiCsrfAttribute: MyNamespace.MyAntiCsrfAttribute
-```
-
-For project specific settings add SecurityCodeScan.config.yml into a project. Go to file properties and set the *Build Action* to *AdditionalFiles*:
-
-![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
-
-An example of SecurityCodeScan.config.yml with custom sink function (method that shouldn't be called with untrusted data without first being sanitized):
-```yml
-Version: 1.0
-Sinks:
-  UniqueKey:
-    Namespace: MyNamespace
-    ClassName: Test
-    Member: method
-    Name: VulnerableFunctionName
-    InjectableArguments: [0]
-    Locale: SCS0001
-```
+Added external configuration files: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add your specific Sinks and Behaviors.  
+> ⚠️Note: Configuration schema has changed in version 3.0.0 please refer to the documentation above for examples.
 
 Audit Mode setting (Off by default) was introduced for those interested in warnings with more false positives.
 
