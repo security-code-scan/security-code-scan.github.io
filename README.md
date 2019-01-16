@@ -33,7 +33,7 @@ Installing it as NuGet package gives an advantage to choose projects in a soluti
 
 However it requires discipline to install SCS into every solution a developer works with. Installing it as a Visual Studio extension is a single install action.
 
-Because of the [Roslyn](https://github.com/dotnet/roslyn) technology SCS is based on, only the NuGet version runs during a build (VS extension provides IntelliSense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
+The NuGet version runs during a build and in background as IntelliSense (VS extension provides IntelliSense only) and can be integrated to any Continuous Integration (CI) server that supports [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx).
 
 ## Continuous Integration Builds
 If the CI server of your choice is using MSBuild, then integration of SCS is just a matter of adding NuGet packages and collecting the output from the build. SCS warnings are in the form of  
@@ -47,7 +47,7 @@ If your CI server doesn't support MSBuild, here is an example how it can be scri
 
 # Configuration
 ## Full Solution Analysis
-*Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
+*Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package, because it will run during a build, but if it is enabled you'll see the warnings as IntelliSense from NuGet too. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
 
 ![Full Solution Analysis](images/fullsolution.png)  
 Since *Full solution analysis* for IntelliSense has performance impact this is another reason to use SCS during a build only as a NuGet instead of Visual Studio extension. Microsoft has some [additional information](https://docs.microsoft.com/en-us/visualstudio/code-quality/how-to-enable-and-disable-full-solution-analysis-for-managed-code) on the configuration option.
@@ -57,7 +57,7 @@ Download an intentionally vulnerable project [WebGoat.NET](https://github.com/OW
 
 ![Intellisense](images/intellisense.png)
 
-If SCS is installed as NuGet package you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
+If SCS is installed as NuGet package and *Full solution analysis* is disabled you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
 
 ![Intellisense](images/output.png)
 
@@ -96,7 +96,11 @@ $content.Save($_)
 ## External Configuration Files
 There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add new rules. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-2.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 
-For project specific settings add SecurityCodeScan.config.yml into a project. Go to file properties and set the Build Action to AdditionalFiles:
+For project specific settings add a file named SecurityCodeScan.config.yml into a project.
+> ⚠️Note:
+> The file name doesn't have '2.0'. Instead it **must** have `Version: 2.0` configuration setting in it's content. If the setting is missing you will get a runtime analysis exception.
+
+Go to file properties and set the Build Action to AdditionalFiles:
 
 ![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
 
