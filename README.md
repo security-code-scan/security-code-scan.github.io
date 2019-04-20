@@ -6,8 +6,6 @@
 
 <span class="octicon octicon-git-branch"/> Taint analysis to track user input data.
 
-<span class="octicon octicon-tools"/> One click refactoring for some vulnerabilities.
-
 <span class="octicon octicon-code"/> Analyzes .NET and [.NET Core](https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core) projects in a background (IntelliSense) or during a build.
 
 <span class="octicon octicon-pulse"/> Continuous Integration (CI) through [MSBuild](https://msdn.microsoft.com/en-us/library/dd393574.aspx). For Unix CI runners please use [VS2017 NuGet package](https://www.nuget.org/packages/SecurityCodeScan.VS2017). See [Continuous Integration Builds section](#continuous-integration-builds) for instructions.
@@ -1490,6 +1488,11 @@ will produce the following JSON without type information that is perfectly fine 
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
 
 # Release Notes
+## 3.2.0
+Bugfix release.
+* Fixes using SCS as nuget. [#117](https://github.com/security-code-scan/security-code-scan/issues/117)
+* One click code fixes were removed until a separate assembly is created. [#71](https://github.com/security-code-scan/security-code-scan/issues/71)
+
 ## 3.1.0
 The release adds support for VS2019 and bug fixes. Also:
 * Adds multiple XSS sinks for WebForms (thanks [Andrei!](https://github.com/zaichenko))
