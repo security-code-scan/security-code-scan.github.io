@@ -554,6 +554,59 @@ db.ExecuteDataSet(cmd);
 #### References
 [Microsoft.Practices.EnterpriseLibrary.Data.Sql Namespace](https://docs.microsoft.com/en-us/previous-versions/msp-n-p/bb689524(v%3dpandp.31))  
 [See references in the main SQL Injection section](#SQLInjection)  
+<div id="SCS0037"></div>
+
+### SCS0037 - SQL Injection (nHibernate)
+Use named parametrized queries to mitigate nHibernate SQL injection.
+#### Vulnerable Code
+```cs
+session.CreateSQLQuery("SELECT * FROM users WHERE username = '" + username + "';");
+```
+#### Solution
+```cs
+session.CreateSQLQuery("SELECT * FROM users WHERE username = :username;").SetParameter("username", username);
+```
+#### References
+[nHibernate Manual - Querying Data](https://nhibernate.info/doc/nhibernate-reference/manipulatingdata.html#manipulatingdata-querying)  
+[See references in the main SQL Injection section](#SQLInjection)  
+<div id="SCS0038"></div>
+
+### SCS0038 - CQL Injection (Cassandra)
+Use named parametrized queries to mitigate Cassandra CQL injection.
+#### Vulnerable Code
+```cs
+session.Execute("SELECT * FROM users WHERE username = '" + username + "';");
+```
+#### Solution
+```cs
+var preparedStatement = session.Prepare("SELECT * FROM users WHERE username = :username");
+
+var boundStatement = preparedStatement.Bind(new
+{
+	username = username
+});
+
+session.Execute(boundStatement);
+```
+#### References
+[Datastax Documentation - Named parameters](https://docs.datastax.com/en/developer/csharp-driver/latest/features/parametrized-queries/#named-parameters-example)  
+[See references in the main SQL Injection section](#SQLInjection)  
+<div id="SCS0039"></div>
+
+### SCS0039 - SQL Injection (Npgsql)
+Use named parametrized queries to mitigate SQL injection.
+#### Vulnerable Code
+```cs
+var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = '" +  username + "';");
+```
+#### Solution
+```cs
+var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = :username;");
+cmd.Parameters.AddWithValue("username", username);
+```
+#### References
+[Npgsql Documentation - Npgsql Basic Usage](https://www.npgsql.org/doc/basic-usage.html)  
+[See references in the main SQL Injection section](#SQLInjection)  
 ## Cryptography
 <div id="SCS0004"></div>
 
