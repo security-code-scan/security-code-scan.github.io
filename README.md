@@ -1542,6 +1542,13 @@ will produce the following JSON without type information that is perfectly fine 
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
 
 # Release Notes
+## 3.5.0
+* Better taint analysis in implicit string conversions case.
+* Out of range exception fix.
+* New SQL injection and Path Traversal sinks.
+
+Thanks [@watfordgnf](https://github.com/watfordgnf) and [@indy-singh](https://github.com/indy-singh) for the contributions!
+
 ## 3.4.0
 * XSS analyzer was rewritten. Additional sanitizers were added.
 * Added [ReportAnalysisCompletion](https://github.com/security-code-scan/security-code-scan/commit/792c265cd218ea7abb8433d52ca159eb90ab91ae#diff-34b8f54577569f3aae468b7f58cc5d02) option to output a message that the analysis did run.
