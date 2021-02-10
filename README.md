@@ -16,8 +16,8 @@
 
 # Installation
 Security Code Scan (SCS) [can be installed as](https://docs.microsoft.com/en-us/visualstudio/code-quality/install-roslyn-analyzers):
-* [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=JaroslavLobacevski.SecurityCodeScan). Use the link or open "Tools > Extensions and Updates..." Select "Online" in the tree on the left and search for SecurityCodeScan in the right upper field. Click "Download" and install.
-* [NuGet package](https://www.nuget.org/packages/SecurityCodeScan/).
+* [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=JaroslavLobacevski.SecurityCodeScanVS2019). Use the link or open "Tools > Extensions and Updates..." Select "Online" in the tree on the left and search for SecurityCodeScan in the right upper field. Click "Download" and install.
+* [NuGet package](https://www.nuget.org/packages/SecurityCodeScan.VS2019/).
   * Right-click on the root item in your solution. Select "Manage NuGet Packages for Solution...". Select "Browse" on the top and search for Security Code Scan. Select project you want to install into and click "Install".
   * Another option is to install the package into all projects in a solution: use "Tools > NuGet Package Manager > Package Manager Console". Run the command `Get-Project -All | Install-Package SecurityCodeScan`.
 
@@ -26,7 +26,7 @@ Installing it as NuGet package gives an advantage to choose projects in a soluti
 > In a .NET Core project, if you add a reference to a project that has SCS as a NuGet package, it is automatically added to the dependent project too. To disable this behavior, for example if the dependent project is a unit test project, mark the NuGet package as private in the *.csproj* or *.vbproj* file of the referenced project:
 >
 > ```xml
-> <PackageReference Include="SecurityCodeScan" Version="3.0.0" PrivateAssets="all" />
+> <PackageReference Include="SecurityCodeScan" Version="5.0.0" PrivateAssets="all" />
 > ```
 
 However it requires discipline to install SCS into every solution a developer works with. Installing it as a Visual Studio extension is a single install action.
@@ -39,20 +39,20 @@ For custom integrations SCS is capable of producing results in SARIF format and 
 `[source file](line,column): warning SCS[rule id]: [warning description] [project_file]`  
 
 # Configuration
-## Full Solution Analysis
-*Full solution analysis* is a Visual Studio (2015 Update 3 RC and later) feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package, because it will run during a build, but if it is enabled you'll see the warnings as IntelliSense from NuGet too. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Enable full solution analysis" is checked:
+## Background analysis scope
+*Background analysis scope* is a Visual Studio feature that enables you to choose whether you see code analysis issues only in open Visual C# or Visual Basic files in your solution, or in both open and closed Visual C# or Visual Basic files in your solution. For performance reasons it is disabled by default. It is not needed if SCS is installed as NuGet package, because it will run during a build, but if it is enabled you'll see the warnings as IntelliSense from NuGet too. In VS extension case open Tools > Options in Visual Studio. Select Text Editor > C# (or Basic) > Advanced. Make sure the "Entire solution" is selected:
 
-![Full Solution Analysis](images/fullsolution.png)  
-Since *Full solution analysis* for IntelliSense has performance impact this is another reason to use SCS during a build only as a NuGet instead of Visual Studio extension. Microsoft has some [additional information](https://docs.microsoft.com/en-us/visualstudio/code-quality/how-to-enable-and-disable-full-solution-analysis-for-managed-code) on the configuration option.
+![Background analysis scope](images/fullsolution.png)  
+Since *Entire solution* for IntelliSense has performance impact this is another reason to use SCS during a build only as a NuGet instead of Visual Studio extension. Microsoft has some [additional information](https://docs.microsoft.com/en-us/visualstudio/code-quality/how-to-enable-and-disable-full-solution-analysis-for-managed-code) on the configuration option.
 
 ## Testing on WebGoat.NET
 Download an intentionally vulnerable project [WebGoat.NET](https://github.com/OWASP/WebGoat.NET/zipball/master) for testing. Open the solution. If you have installed SCS as a VS extension you should see warning after few seconds in the "Errors" tab. Make sure IntelliSense results are not filtered in the window:
 
-![Intellisense](images/intellisense.png)
+![Intellisense filter](images/intellisense.png)
 
-If SCS is installed as NuGet package and *Full solution analysis* is disabled you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
+If SCS is installed as NuGet package and *Entire solution* is disabled you'll need to build the solution. Then you should see the warning in the "Errors" and "Output" tabs:
 
-![Intellisense](images/output.png)
+![Intellisense output](images/output.png)
 
 ## Analyzing .aspx and web.config Files
 To enable analysis of these files you need to modify all C#(.csproj) and VB.NET(.vbproj) projects in a solution and add "AdditionalFileItemNames" element as shown below:
@@ -87,41 +87,44 @@ $content.Save($_)
 ```
 
 ## External Configuration Files
-There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) or add new rules. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-2.1.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
+There are two types of external configuration files that can be used together: per user account and per project. It allows you to customize settings from [built-in configuration](https://github.com/security-code-scan/security-code-scan/blob/vs2019/SecurityCodeScan/Config/Main.yml) or add new rules. Global settings file location is `%LocalAppData%\SecurityCodeScan\config-3.0.yml` on Windows and `$XDG_DATA_HOME/.local/share` on Unix.  
 
 For project specific settings add a file named SecurityCodeScan.config.yml into a project.
 > ⚠️Note:
-> The file name doesn't have '2.1'. Instead it **must** have `Version: 2.1` configuration setting in it's content. If the setting is missing you will get a runtime analysis exception.
+> The file name doesn't have '3.0'. Instead it **must** have `Version: 3.0` configuration setting in it's content. If the setting is missing you will get a runtime analysis exception.
 
 Go to file properties and set the Build Action to AdditionalFiles:
 
-![image](https://user-images.githubusercontent.com/26652396/43063175-d28dc288-8e63-11e8-90eb-a7cb31900aff.png)
+![Additional files property](images/additionalfiles.png)
 
 ### Custom taint source, sinks, sanitizers and validators
 
-An example of user's (per OS user) config-2.1.yml with custom Anti CSRF token:
+An example of user's (per OS user) config-3.0.yml with custom Anti CSRF token:
 
-```yml
-CsrfProtection:
-  - Name: ASP.NET Core MVC
-    AntiCsrfAttributes:
-      - Name: MyNamespace.MyAntiCsrfAttribute
+```yaml
+AuthorizeCheck:
+  MyRuleName:
+    Name: ASP.NET MVC
+    RequiredAttributes:
+      - Type: MyNamespace.MyAuthorizationCheckAttribute
 ```
 
 An example of SecurityCodeScan.config.yml (per project) with custom sink function (method that shouldn't be called with untrusted data without first being sanitized):
 
-```yml
-Version: 2.1
+```yaml
+Version: 3.0
 
-Behavior:
-  UniqueKey:
-    Namespace: MyNamespace
-    ClassName: Test
-    Name: VulnerableFunctionName
-    InjectableArguments: [SCS0001: [0: HtmlEscaped]]
+Sinks:
+  - Type: System.Messaging.BinaryMessageFormatter
+    TaintTypes:
+      - SCS0028
+    Methods:
+    - Name: Read
+      Arguments:
+        - message
 ```
 
-See the [configuration file](https://github.com/security-code-scan/security-code-scan/blob/master/SecurityCodeScan/Config/Main.yml) for comments and examples of usage.  
+See the [configuration file](https://github.com/security-code-scan/security-code-scan/blob/vs2019/SecurityCodeScan/Config/Main.yml) for comments and examples of usage.  
 
 ### Audit Mode
 Audit mode is off by default. It can be turned on in an external configuration file to get more potentially false positive warnings about data with unknown taint state.
@@ -130,11 +133,11 @@ Audit mode is off by default. It can be turned on in an external configuration f
 If *Code Fixer* is not implemented for the warning the link "Show potential fixes" won't work. For many warnings there are too many options to resolve the issue, so the code has to be modified manually.
 If the warning is false positive it can be suppressed that is [standard functionality for Visual Studio](https://docs.microsoft.com/en-us/visualstudio/code-quality/in-source-suppression-overview) however the UI not very intuitive, because you have to click on the underlined piece of code, only then a bubble appears at the beginning of the line where suppress menu is available:
 
-![Suppress](https://i.stack.imgur.com/Gne1p.png)
+![Suppress in context menu](images/suppresscontextmenu.png)
 
 Another place where the menu is available is *Error List*:
 
-![Suppress](https://i.stack.imgur.com/oLWSt.png)
+![Suppress in error list](images/suppresserrorlist.png)
 
 It is possible to filter shown item in *Error List* by different criteria: warning id, project name, etc.
 You can permanently suppress entire warning type for a project by setting it's warning id severity to *None*. Microsoft has [it's own documentation](https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers) about suppressions, rule sets and severities.
@@ -325,9 +328,32 @@ public class TestController : Controller
 [OWASP: XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet)  
 [OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)](https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29)  
 [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](http://cwe.mitre.org/data/definitions/79.html)  
+<div id="SCS0026"></div>
+
+### SCS0026 - LDAP Distinguished Name Injection
+The dynamic value passed to the LDAP query should be validated.
+#### Risk
+If the user input is not properly filtered, a malicious user could extend the LDAP query.
+#### Vulnerable Code
+```cs
+var dir = new DirectoryEntry();
+dir.Path = $"GC://DC={input},DC=com";
+```
+#### Solution
+Use proper encoder (`LdapFilterEncode` or `LdapDistinguishedNameEncode`) from [AntiXSS library](https://www.nuget.org/packages/AntiXSS/):
+```cs
+var dir = new DirectoryEntry();
+dir.Path = $"GC://DC={Encoder.LdapDistinguishedNameEncode(input)},DC=com";
+```
+#### References
+[OWASP: LDAP Injection](https://www.owasp.org/index.php/LDAP_injection)  
+[OWASP: LDAP Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet)  
+[MSDN Blog - Security Tools: LDAP Injection and mitigation](https://blogs.msdn.microsoft.com/securitytools/2009/08/10/ldap-injection-and-mitigation/)  
+[WASC-29: LDAP Injection](http://projects.webappsec.org/w/page/13246947/LDAP%20Injection)  
+[CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')](https://cwe.mitre.org/data/definitions/90.html)  
 <div id="SCS0031"></div>
 
-### SCS0031 - LDAP Injection
+### SCS0031 - LDAP Filter Injection
 The dynamic value passed to the LDAP query should be validated.
 #### Risk
 If the user input is not properly filtered, a malicious user could extend the LDAP query.
@@ -336,21 +362,11 @@ If the user input is not properly filtered, a malicious user could extend the LD
 var searcher = new DirectorySearcher();
 searcher.Filter = "(cn=" + input + ")";
 ```
-or
-```cs
-var dir = new DirectoryEntry();
-dir.Path = $"GC://DC={input},DC=com";
-```
 #### Solution
 Use proper encoder (`LdapFilterEncode` or `LdapDistinguishedNameEncode`) from [AntiXSS library](https://www.nuget.org/packages/AntiXSS/):
 ```cs
 var searcher = new DirectorySearcher();
 searcher.Filter = "(cn=" + Encoder.LdapFilterEncode(input) + ")";
-```
-or
-```cs
-var dir = new DirectoryEntry();
-dir.Path = $"GC://DC={Encoder.LdapDistinguishedNameEncode(input)},DC=com";
 ```
 #### References
 [OWASP: LDAP Injection](https://www.owasp.org/index.php/LDAP_injection)  
@@ -370,150 +386,7 @@ Malicious user might get direct read and/or write access to the database. If the
 [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](http://cwe.mitre.org/data/definitions/89.html)  
 <div id="SCS0002"></div>
 
-### SCS0002 - SQL Injection (LINQ)
-#### Vulnerable Code
-```cs
-db.ExecuteQuery(@"SELECT name FROM dbo.Users WHERE UserId = " + inputId + " AND group = 5");
-```
-```cs
-var query = "SELECT name FROM dbo.Users WHERE UserId = " + userId + " AND group = 5";
-var id = context.ExecuteQuery<IEnumerable<string>>(query).SingleOrDefault();
-```
-#### Solution
-```cs
-var query = from user in db.Users
-where user.UserId == inputId
-select user.name;
-```
-```cs
-var query = "SELECT name FROM dbo.Users WHERE UserId = {0} AND group = 5";
-var id = context.ExecuteQuery<IEnumerable<string>>(query, userId).SingleOrDefault();
-```
-#### References
-[LINQ: How to Query for Information](https://msdn.microsoft.com/en-us/library/bb546192(v=vs.110).aspx)  
-<div id="SCS0014"></div>
-
-### SCS0014 - SQL Injection (WebControls)
-Unsafe usage of System.Web.UI.WebControls.SqlDataSource, System.Web.UI.WebControls.SqlDataSourceView or Microsoft.Whos.Framework.Data.SqlUtility.
-#### Vulnerable Code
-```
-"Select * From Customers where CustomerName = " & txtCustomerName.Value
-```
-#### Solution
-To help protect against SQL statement exploits, never create SQL queries using string concatenation. Instead, use a parameterized query and assign user input to parameter objects.
-By default, the SqlDataSource control uses the System.Data.SqlClient data provider to work with SQL Server as the data source. The System.Data.SqlClient provider supports named parameters as placeholders, as shown in the following example:
-```xml
-<asp:sqlDataSource ID="EmployeeDetailsSqlDataSource" 
-  SelectCommand="SELECT EmployeeID, LastName, FirstName FROM Employees WHERE EmployeeID = @EmpID"
-
-  InsertCommand="INSERT INTO Employees(LastName, FirstName) VALUES (@LastName, @FirstName); 
-                 SELECT @EmpID = SCOPE_IDENTITY()"
-  UpdateCommand="UPDATE Employees SET LastName=@LastName, FirstName=@FirstName 
-                   WHERE EmployeeID=@EmployeeID"
-  DeleteCommand="DELETE Employees WHERE EmployeeID=@EmployeeID"
-
-  ConnectionString="<%$ ConnectionStrings:NorthwindConnection %>"
-  OnInserted="EmployeeDetailsSqlDataSource_OnInserted"
-  RunAt="server">
-
-  <SelectParameters>
-    <asp:Parameter Name="EmpID" Type="Int32" DefaultValue="0" />
-  </SelectParameters>
-
-  <InsertParameters>
-    <asp:Parameter Name="EmpID" Direction="Output" Type="Int32" DefaultValue="0" />
-  </InsertParameters>
-
-</asp:sqlDataSource>
-```
-If you are connecting to an OLE DB or ODBC data source, you can configure the SqlDataSource control to use the System.Data.OleDb or System.Data.Odbc provider to work with your data source, respectively. The System.Data.OleDb and System.Data.Odbc providers support only positional parameters identified by the "?" character, as shown in the following example:
-```xml
-...
-<asp:SqlDataSource ID="EmployeeDetailsSqlDataSource" 
-  SelectCommand="SELECT EmployeeID, LastName, FirstName, Address, City, Region, PostalCode
-                 FROM Employees WHERE EmployeeID = ?"
-
-  InsertCommand="INSERT INTO Employees(LastName, FirstName, Address, City, Region, PostalCode)
-                 VALUES (?, ?, ?, ?, ?, ?); 
-                 SELECT @EmpID = SCOPE_IDENTITY()"
-
-  UpdateCommand="UPDATE Employees SET LastName=?, FirstName=?, Address=?,
-                   City=?, Region=?, PostalCode=?
-                 WHERE EmployeeID=?"
-...
-```
-#### References
-[MSDN: Using Parameters with the SqlDataSource Control](https://msdn.microsoft.com/en-us/library/z72eefad(v=vs.110).aspx)  
-[MSDN: Script Exploits Overview](https://msdn.microsoft.com/en-us/library/w1sw53ds(v=vs.110).aspx)  
-[MSDN: Filtering Event](https://msdn.microsoft.com/en-us/library/system.web.ui.webcontrols.sqldatasource.filtering(v=vs.110).aspx)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0020"></div>
-
-### SCS0020 - SQL Injection (OLE DB)
-Use parametrized queries to mitigate SQL injection.
-#### Vulnerable Code
-```cs
-string queryString = "SELECT OrderID, CustomerID FROM Orders WHERE OrderId = " + userInput;
-
-using (var connection = new OleDbConnection(connectionString))
-{
-    OleDbCommand command = new OleDbCommand(queryString, connection);
-    connection.Open();
-    OleDbDataReader reader = command.ExecuteReader();
-}
-```
-#### Solution
-```cs
-string queryString = "SELECT OrderID, CustomerID FROM Orders WHERE OrderId = ?";
-
-using (var connection = new OleDbConnection(connectionString))
-{
-    OleDbCommand command = new OleDbCommand(queryString, connection);
-    command.Parameters.Add("@p1", OleDbType.Integer).Value = userInput;
-    connection.Open();
-    OleDbDataReader reader = command.ExecuteReader();
-}
-```
-#### References
-[OleDbCommand Documentation](https://msdn.microsoft.com/en-us/library/system.data.oledb.oledbcommand(v=vs.110).aspx)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0025"></div>
-
-### SCS0025 - SQL Injection (ODBC)
-Use parametrized queries to mitigate SQL injection.
-#### Vulnerable Code
-```cs
-var command = new OdbcCommand("SELECT * FROM [user] WHERE id = " + userInput, connection);
-OdbcDataReader reader = command.ExecuteReader();
-```
-#### Solution
-```cs
-var command = new OdbcCommand("SELECT * FROM [user] WHERE id = ?", connection);
-command.Parameters.Add("@id", OdbcType.Int).Value = 4;
-OdbcDataReader reader = command.ExecuteReader();
-```
-#### References
-[OdbcCommand Documentation](https://msdn.microsoft.com/en-us/library/system.data.odbc.odbccommand(v=vs.110).aspx)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0026"></div>
-
-### SCS0026 - SQL Injection (MsSQL Data Provider)
-Use parametrized queries to mitigate SQL injection.
-#### Vulnerable Code
-```cs
-var cmd = new SqlCommand("SELECT * FROM Users WHERE username = '" + username + "' and role='user'");
-```
-#### Solution
-```cs
-var cmd = new SqlCommand("SELECT * FROM Users WHERE username = @username and role='user'");
-cmd.Parameters.AddWithValue("username", username);
-```
-#### References
-[SqlCommand Class Documentation](https://msdn.microsoft.com/en-us/library/system.data.sqlclient.sqlcommand(v=vs.110).aspx)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0035"></div>
-
-### SCS0035 - SQL Injection (Entity Framework)
+### SCS0035 - SQL Injection
 Use parametrized queries to mitigate SQL injection.
 #### Vulnerable Code
 ```cs
@@ -533,76 +406,6 @@ ctx.Database.ExecuteSqlCommand(
 [Execute Raw SQL Queries in Entity Framework 6](http://www.entityframeworktutorial.net/entityframework4.3/raw-sql-query-in-entity-framework.aspx)  
 [Executing Raw SQL Queries in Entity Framework Core](https://www.learnentityframeworkcore.com/raw-sql)  
 [Bobby Tables: A guide to preventing SQL injection > Entity Framework](http://bobby-tables.com/adodotnet_ef)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0036"></div>
-
-### SCS0036 - SQL Injection (EnterpriseLibrary.Data)
-Use parametrized queries to mitigate SQL injection.
-#### Vulnerable Code
-```cs
-db.ExecuteDataSet(CommandType.Text, "SELECT * FROM Users WHERE username = '" + input + "' and role='user'");
-```
-#### Solution
-```cs
-DbCommand cmd = db.GetSqlStringCommand("SELECT * FROM Users WHERE username = @username and role='user'");
-db.AddInParameter(cmd, "@username", DbType.String, input);
-db.ExecuteDataSet(cmd);
-```
-#### References
-[Microsoft.Practices.EnterpriseLibrary.Data.Sql Namespace](https://docs.microsoft.com/en-us/previous-versions/msp-n-p/bb689524(v%3dpandp.31))  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0037"></div>
-
-### SCS0037 - SQL Injection (nHibernate)
-Use named parametrized queries to mitigate nHibernate SQL injection.
-#### Vulnerable Code
-```cs
-session.CreateSQLQuery("SELECT * FROM users WHERE username = '" + username + "';");
-```
-#### Solution
-```cs
-session.CreateSQLQuery("SELECT * FROM users WHERE username = :username;").SetParameter("username", username);
-```
-#### References
-[nHibernate Manual - Querying Data](https://nhibernate.info/doc/nhibernate-reference/manipulatingdata.html#manipulatingdata-querying)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0038"></div>
-
-### SCS0038 - CQL Injection (Cassandra)
-Use named parametrized queries to mitigate Cassandra CQL injection.
-#### Vulnerable Code
-```cs
-session.Execute("SELECT * FROM users WHERE username = '" + username + "';");
-```
-#### Solution
-```cs
-var preparedStatement = session.Prepare("SELECT * FROM users WHERE username = :username");
-
-var boundStatement = preparedStatement.Bind(new
-{
-	username = username
-});
-
-session.Execute(boundStatement);
-```
-#### References
-[Datastax Documentation - Named parameters](https://docs.datastax.com/en/developer/csharp-driver/latest/features/parametrized-queries/#named-parameters-example)  
-[See references in the main SQL Injection section](#SQLInjection)  
-<div id="SCS0039"></div>
-
-### SCS0039 - SQL Injection (Npgsql)
-Use named parametrized queries to mitigate SQL injection.
-#### Vulnerable Code
-```cs
-var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = '" +  username + "';");
-```
-#### Solution
-```cs
-var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username = :username;");
-cmd.Parameters.AddWithValue("username", username);
-```
-#### References
-[Npgsql Documentation - Npgsql Basic Usage](https://www.npgsql.org/doc/basic-usage.html)  
 [See references in the main SQL Injection section](#SQLInjection)  
 ## Cryptography
 <div id="SCS0004"></div>
@@ -734,90 +537,9 @@ Notice that AES itself doesn't protect from encrypted data tampering. For an exa
 [NIST Withdraws Outdated Data Encryption Standard](http://www.nist.gov/itl/fips/060205_des.cfm)  
 [CWE-326: Inadequate Encryption Strength](http://cwe.mitre.org/data/definitions/326.html)  
 [StackOverflow: Authenticated encryption example](http://stackoverflow.com/questions/202011/encrypt-and-decrypt-a-string/10366194#10366194)  
-<div id="SCS0011"></div>
-
-### SCS0011 - Weak CBC Mode
-The CBC mode alone is susceptible to padding oracle attack.
-#### Risk
-If an attacker is able to submit encrypted payload and the server is decrypting its content. The attacker is likely to decrypt its content.
-#### Vulnerable Code
-```cs
-using (var aes = new AesManaged {
-    KeySize = KeyBitSize,
-    BlockSize = BlockBitSize,
-    Mode = CipherMode.CBC,
-    Padding = PaddingMode.PKCS7
-})
-{
-    //Use random IV
-    aes.GenerateIV();
-    iv = aes.IV;
-    using (var encrypter = aes.CreateEncryptor(cryptKey, iv))
-    using (var cipherStream = new MemoryStream())
-    {
-        using (var cryptoStream = new CryptoStream(cipherStream, encrypter, CryptoStreamMode.Write))
-        using (var binaryWriter = new BinaryWriter(cryptoStream))
-        {
-            //Encrypt Data
-            binaryWriter.Write(secretMessage);
-        }
-        cipherText = cipherStream.ToArray();
-    }
-}
-//No HMAC suffix to check integrity!!!
-```
-#### Solution
-See the [Solution in Weak Cipher Mode](#SCS0013).
-#### References
-[Padding Oracles for the masses (by Matias Soler)](http://www.infobytesec.com/down/paddingoracle_openjam.pdf)  
-[Wikipedia: Authenticated encryption](http://en.wikipedia.org/wiki/Authenticated_encryption)  
-[NIST: Authenticated Encryption Modes](http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html#01)  
-[CAPEC: Padding Oracle Crypto Attack](http://capec.mitre.org/data/definitions/463.html)  
-[CWE-696: Incorrect Behavior Order](http://cwe.mitre.org/data/definitions/696.html)  
-<div id="SCS0012"></div>
-
-### SCS0012 - Weak ECB Mode
-ECB mode will produce the same result for identical blocks (ie: 16 bytes for AES). An attacker could be able to guess the encrypted message. The use of AES in CBC mode with a HMAC is recommended guaranteeing integrity and confidentiality.
-#### Risk
-The ECB mode will produce identical encrypted block for equivalent plain text block. This could allow an attacker that is eavesdropping to guess the content sent. This same property can also allow the recovery of the original message. Furthermore, this cipher mode alone does not guarantee integrity.
-#### Vulnerable Code
-```cs
-using (var aes = new AesManaged {
-    KeySize = KeyBitSize,
-    BlockSize = BlockBitSize,
-    Mode = CipherMode.ECB, // !!!
-    Padding = PaddingMode.PKCS7
-})
-{
-    //Use random IV
-    aes.GenerateIV();
-    iv = aes.IV;
-    using (var encrypter = aes.CreateEncryptor(cryptKey, iv))
-    using (var cipherStream = new MemoryStream())
-    {
-        using (var cryptoStream = new CryptoStream(cipherStream, encrypter, CryptoStreamMode.Write))
-        using (var binaryWriter = new BinaryWriter(cryptoStream))
-        {
-            //Encrypt Data
-            binaryWriter.Write(secretMessage);
-        }
-        cipherText = cipherStream.ToArray();
-    }
-}
-//No HMAC suffix to check integrity!!!
-```
-#### Solution
-Use some other mode, but notice that CBC without authenticated integrity check is vulnerable to another type of attack. For an example of authenticated integrity check see the [Solution in Weak Cipher Mode](#SCS0013).
-#### References
-[Wikipedia: ECB mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_(ECB))  
-[Padding Oracles for the masses (by Matias Soler)](http://www.infobytesec.com/down/paddingoracle_openjam.pdf)  
-[Wikipedia: Authenticated encryption](http://en.wikipedia.org/wiki/Authenticated_encryption)  
-[NIST: Authenticated Encryption Modes](http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html#01)  
-[CAPEC: Padding Oracle Crypto Attack](http://capec.mitre.org/data/definitions/463.html)  
-[CWE-696: Incorrect Behavior Order](http://cwe.mitre.org/data/definitions/696.html)  
 <div id="SCS0013"></div>
 
-### SCS0013 - Weak Cipher Mode
+### SCS0013 - Potential usage of weak AES mode
 The cipher text produced is susceptible to alteration by an adversary.
 #### Risk
 The cipher provides no way to detect that the data has been tampered with. If the cipher text can be controlled by an attacker, it could be altered without detection. The use of AES in CBC mode with a HMAC is recommended guaranteeing integrity and confidentiality.
@@ -957,8 +679,9 @@ public static byte[] SimpleEncrypt(byte[] secretMessage, byte[] cryptKey, byte[]
 [Padding Oracles for the masses (by Matias Soler)](http://www.infobytesec.com/down/paddingoracle_openjam.pdf)  
 [Wikipedia: Authenticated encryption](http://en.wikipedia.org/wiki/Authenticated_encryption)  
 [NIST: Authenticated Encryption Modes](http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html#01)  
-[CAPEC: Padding Oracle Crypto Attack](http://capec.mitre.org/data/definitions/463.html)  
 [CWE-696: Incorrect Behavior Order](http://cwe.mitre.org/data/definitions/696.html)  
+[CAPEC: Padding Oracle Crypto Attack](http://capec.mitre.org/data/definitions/463.html)  
+[Wikipedia: ECB mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_(ECB))  
 ## Cookies
 <div id="SCS0008"></div>
 
@@ -1268,6 +991,14 @@ PasswordValidator pwdv = new PasswordValidator
 #### References
 [MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 ## Other
+<div id="SCS0011"></div>
+
+### SCS0011 - Unsafe XSLT setting used
+
+<div id="SCS0012"></div>
+
+### SCS0012 - Controller method is potentially vulnerable to authorization bypass
+
 <div id="SCS0016"></div>
 
 ### SCS0016 - Cross-Site Request Forgery (CSRF)
@@ -1539,6 +1270,11 @@ will produce the following JSON without type information that is perfectly fine 
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
 
 # Release Notes
+## 5.0.0
+* New inter-procedural taint analysis engine.
+* New sinks and sources.
+* Bug fixes.
+
 ## 3.5.3
 * Removed EntityFramework "Interpolated" sinks that caused false positives.
 * Added configuration entry for Web Config analyzer to allow filtering file names.
