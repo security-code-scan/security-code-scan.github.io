@@ -183,9 +183,9 @@ if(rgx.IsMatch(input))
 }
 ```
 #### References
+[CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)  
 [OWASP: Command Injection](https://www.owasp.org/index.php/Command_Injection)  
 [OWASP: Top 10 2013-A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)  
-[CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)  
 <div id="SCS0002"></div>
 
 ### SCS0002 - SQL Injection
@@ -209,11 +209,11 @@ ctx.Database.ExecuteSqlCommand(
     new SqlParameter("@username", input));
 ```
 #### References
+[CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)  
 [WASC-19: SQL Injection](http://projects.webappsec.org/w/page/13246963/SQL%20Injection)  
 [OWASP: SQL Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet)  
 [OWASP: Query Parameterization Cheat Sheet](https://www.owasp.org/index.php/Query_Parameterization_Cheat_Sheet)  
 [CAPEC-66: SQL Injection](http://capec.mitre.org/data/definitions/66.html)  
-[CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)  
 [Bobby Tables: A guide to preventing SQL injection](http://bobby-tables.com/csharp)  
 <div id="SCS0003"></div>
 
@@ -239,9 +239,9 @@ if(rgx.IsMatch(input)) //Additional validation
 ```
 #### References
 [CWE-643: Improper Neutralization of Data within XPath Expressions ('XPath Injection')](https://cwe.mitre.org/data/definitions/643.html)  
+[WASC-39: XPath Injection](http://projects.webappsec.org/w/page/13247005/XPath%20Injection)  
 [OWASP: XPATH Injection](https://www.owasp.org/index.php/XPATH_Injection)  
 [Black Hat Europe 2012: Hacking XPath 2.0](http://media.blackhat.com/bh-eu-12/Siddharth/bh-eu-12-Siddharth-Xpath-WP.pdf)  
-[WASC-39: XPath Injection](http://projects.webappsec.org/w/page/13247005/XPath%20Injection)  
 
 <div id="SCS0007"></div>
 
@@ -281,8 +281,8 @@ Console.WriteLine(xmlDoc.InnerText);
 
 In .NET Framework versions 4.5.2 and up, XmlTextReader's internal XmlResolver is set to null by default, making the XmlTextReader ignore DTDs by default. The XmlTextReader can become unsafe if if you create your own non-null XmlResolver with default or unsafe settings.
 #### References
-[OWASP.org: XML External Entity (XXE) Prevention Cheat Sheet (.NET)](https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#.NET)  
 [CWE-611: Improper Restriction of XML External Entity Reference ('XXE')](https://cwe.mitre.org/data/definitions/611.html)  
+[OWASP.org: XML External Entity (XXE) Prevention Cheat Sheet (.NET)](https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#.NET)  
 [CERT: IDS10-J. Prevent XML external entity attacks](https://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=61702260)  
 [OWASP.org: XML External Entity (XXE) Processing](https://www.owasp.org/index.php/XML_External_Entity_%28XXE%29_Processing)  
 [WS-Attacks.org: XML Entity Expansion](http://www.ws-attacks.org/index.php/XML_Entity_Expansion)  
@@ -323,9 +323,9 @@ public ActionResult Download(string fileName)
 ```
 If the input is not supplied by user or a validation is in place the warning can be suppressed.
 #### References
+[CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)  
 [OWASP: Path Traversal](https://www.owasp.org/index.php/Path_Traversal)  
 [OS Command Injection, Path Traversal & Local File Inclusion Vulnerability - Notes](https://riseandhack.blogspot.com/2015/02/os-command-injection-path-traversal.html)  
-[CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)  
 
 <div id="SCS0029"></div>
 
@@ -357,10 +357,10 @@ public class TestController : Controller
 }
 ```
 #### References
+[CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)  
 [WASC-8: Cross Site Scripting](http://projects.webappsec.org/w/page/13246920/Cross%20Site%20Scripting)  
 [OWASP: XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet)  
 [OWASP: Top 10 2013-A3: Cross-Site Scripting (XSS)](https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_%28XSS%29)  
-[CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)  
 <div id="SCS0026"></div>
 
 ### SCS0026 - LDAP Distinguished Name Injection
@@ -379,11 +379,11 @@ var dir = new DirectoryEntry();
 dir.Path = $"GC://DC={Encoder.LdapDistinguishedNameEncode(input)},DC=com";
 ```
 #### References
+[CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')](https://cwe.mitre.org/data/definitions/90.html)  
+[WASC-29: LDAP Injection](http://projects.webappsec.org/w/page/13246947/LDAP%20Injection)  
 [OWASP: LDAP Injection](https://www.owasp.org/index.php/LDAP_injection)  
 [OWASP: LDAP Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet)  
 [MSDN Blog - Security Tools: LDAP Injection and mitigation](https://blogs.msdn.microsoft.com/securitytools/2009/08/10/ldap-injection-and-mitigation/)  
-[WASC-29: LDAP Injection](http://projects.webappsec.org/w/page/13246947/LDAP%20Injection)  
-[CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')](https://cwe.mitre.org/data/definitions/90.html)  
 <div id="SCS0031"></div>
 
 ### SCS0031 - LDAP Filter Injection
@@ -402,11 +402,11 @@ var searcher = new DirectorySearcher();
 searcher.Filter = "(cn=" + Encoder.LdapFilterEncode(input) + ")";
 ```
 #### References
+[CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')](https://cwe.mitre.org/data/definitions/90.html)  
+[WASC-29: LDAP Injection](http://projects.webappsec.org/w/page/13246947/LDAP%20Injection)  
 [OWASP: LDAP Injection](https://www.owasp.org/index.php/LDAP_injection)  
 [OWASP: LDAP Injection Prevention Cheat Sheet](https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet)  
 [MSDN Blog - Security Tools: LDAP Injection and mitigation](https://blogs.msdn.microsoft.com/securitytools/2009/08/10/ldap-injection-and-mitigation/)  
-[WASC-29: LDAP Injection](http://projects.webappsec.org/w/page/13246947/LDAP%20Injection)  
-[CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')](https://cwe.mitre.org/data/definitions/90.html)  
 ## Cryptography
 <div id="SCS0004"></div>
 
@@ -429,8 +429,8 @@ ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain,
 #endif
 ```
 #### References
-[WASC-04: Insufficient Transport Layer Protection](http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection)  
 [CWE-295: Improper Certificate Validation](https://cwe.mitre.org/data/definitions/295.html)  
+[WASC-04: Insufficient Transport Layer Protection](http://projects.webappsec.org/w/page/13246945/Insufficient%20Transport%20Layer%20Protection)  
 <div id="SCS0005"></div>
 
 ### SCS0005 - Weak Random Number Generator
@@ -450,8 +450,8 @@ using System.Security.Cryptography;
 var rnd = RandomNumberGenerator.Create();
 ```
 #### References
-[OWASP: Insecure Randomness](https://www.owasp.org/index.php/Insecure_Randomness)  
 [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)  
+[OWASP: Insecure Randomness](https://www.owasp.org/index.php/Insecure_Randomness)  
 
 <div id="SCS0006"></div>
 
@@ -470,9 +470,9 @@ var hashProvider = SHA256Managed.Create();
 var hash = hashProvider.ComputeHash(str);
 ```
 #### References
+[CWE-327: Use of a Broken or Risky Cryptographic Algorithm](https://cwe.mitre.org/data/definitions/327.html)  
 [MSDN: SHA256 Class documentation](https://msdn.microsoft.com/en-us/library/system.security.cryptography.sha256(v=vs.110).aspx)  
 [Salted Password Hashing - Doing it Right](https://crackstation.net/hashing-security.htm)  
-[CWE-327: Use of a Broken or Risky Cryptographic Algorithm](https://cwe.mitre.org/data/definitions/327.html)  
 <div id="SCS0010"></div>
 
 ### SCS0010 - Weak cipher algorithm
@@ -533,8 +533,8 @@ using (MemoryStream msEncrypt = new MemoryStream())
 ```
 Notice that AES itself doesn't protect from encrypted data tampering. For an example of authenticated encryption see the [Solution in Weak Cipher Mode](#SCS0013)
 #### References
-[NIST Withdraws Outdated Data Encryption Standard](http://www.nist.gov/itl/fips/060205_des.cfm)  
 [CWE-327: Use of a Broken or Risky Cryptographic Algorithm](https://cwe.mitre.org/data/definitions/327.html)  
+[NIST Withdraws Outdated Data Encryption Standard](http://www.nist.gov/itl/fips/060205_des.cfm)  
 [StackOverflow: Authenticated encryption example](http://stackoverflow.com/questions/202011/encrypt-and-decrypt-a-string/10366194#10366194)  
 <div id="SCS0013"></div>
 
@@ -675,10 +675,10 @@ public static byte[] SimpleEncrypt(byte[] secretMessage, byte[] cryptKey, byte[]
 }
 ```
 #### References
+[CWE-327: Use of a Broken or Risky Cryptographic Algorithm](https://cwe.mitre.org/data/definitions/327.html)  
 [Padding Oracles for the masses (by Matias Soler)](http://www.infobytesec.com/down/paddingoracle_openjam.pdf)  
 [Wikipedia: Authenticated encryption](http://en.wikipedia.org/wiki/Authenticated_encryption)  
 [NIST: Authenticated Encryption Modes](http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html#01)  
-[CWE-327: Use of a Broken or Risky Cryptographic Algorithm](https://cwe.mitre.org/data/definitions/327.html)  
 [CAPEC: Padding Oracle Crypto Attack](http://capec.mitre.org/data/definitions/463.html)  
 [Wikipedia: ECB mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_(ECB))  
 ## Cookies
@@ -710,9 +710,9 @@ cookie.Secure = true; //Add this flag
 cookie.HttpOnly = true;
 ```
 #### References
+[CWE-614: Sensitive Cookie in HTTPS Session Without 'Secure' Attribute](https://cwe.mitre.org/data/definitions/614.html)  
 [OWASP: Secure Flag](https://www.owasp.org/index.php/SecureFlag)  
 [Rapid7: Missing Secure Flag From SSL Cookie](https://www.rapid7.com/db/vulnerabilities/http-cookie-secure-flag)  
-[CWE-614: Sensitive Cookie in HTTPS Session Without 'Secure' Attribute](https://cwe.mitre.org/data/definitions/614.html)  
 <div id="SCS0009"></div>
 
 ### SCS0009 - Cookie Without HttpOnly Flag
@@ -741,10 +741,10 @@ cookie.Secure = true;
 cookie.HttpOnly = true; //Add this flag
 ```
 #### References
+[CWE-1004: Sensitive Cookie Without 'HttpOnly' Flag](https://cwe.mitre.org/data/definitions/1004.html)  
 [Coding Horror blog: Protecting Your Cookies: HttpOnly](http://blog.codinghorror.com/protecting-your-cookies-httponly/)  
 [OWASP: HttpOnly](https://www.owasp.org/index.php/HttpOnly)  
 [Rapid7: Missing HttpOnly Flag From Cookie](https://www.rapid7.com/db/vulnerabilities/http-cookie-http-only-flag)  
-[CWE-1004: Sensitive Cookie Without 'HttpOnly' Flag](https://cwe.mitre.org/data/definitions/1004.html)  
 ## View State
 <div id="SCS0023"></div>
 
@@ -779,10 +779,10 @@ Explicitly set to `Always` and encrypt with with the .NET [machine key](https://
 </system.web>
 ```
 #### References
+[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: ViewStateEncryptionMode Property](https://msdn.microsoft.com/en-us/library/system.web.configuration.pagessection.viewstateencryptionmode(v=vs.100).aspx)  
 [MSDN: machineKey Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/w8h3skw9(v=vs.100).aspx)  
-[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 
 <div id="SCS0024"></div>
 
@@ -809,8 +809,8 @@ Or set it explicitly:
 </system.web>
 ```
 #### References
-[MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
+[MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 ## Request Validation
 <div id="SCS0017"></div>
 
@@ -842,9 +842,9 @@ public class TestController
 ```
 Always user proper encoder (Html, Url, etc.) before displaying or using user supplied data (even if it is loaded from database).
 #### References
+[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 [MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
 [OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
-[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 See [XSS](#SCS0029) references.  
 <div id="SCS0021"></div>
 
@@ -872,10 +872,10 @@ Or set it explicitly:
 </system.web>
 ```
 #### References
+[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
 [OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
-[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 See [XSS](#SCS0029) references.  
 <div id="SCS0030"></div>
 
@@ -900,11 +900,11 @@ The `requestValidationMode` which provides additional protection against [XSS](#
 </system.web>
 ```
 #### References
+[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: Request Validation in ASP.NET](https://msdn.microsoft.com/en-us/library/hh882339(v=vs.110).aspx)  
 [OWASP: ASP.NET Request Validation](https://www.owasp.org/index.php/ASP.NET_Request_Validation)  
 [MSDN: RequestValidationMode Property](https://msdn.microsoft.com/en-us/library/system.web.configuration.httpruntimesection.requestvalidationmode(v=vs.110).aspx)  
-[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 See [XSS](#SCS0029) references.  
 ## Password Management
 <div id="SCS0015"></div>
@@ -949,8 +949,8 @@ PasswordValidator pwdv = new PasswordValidator();
 #### Solution
 See the solution for [Password Complexity](#SCS0033)
 #### References
-[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 [CWE-521: Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)  
+[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 <div id="SCS0032"></div>
 
 ### SCS0032 - Password RequiredLength Too Small
@@ -967,8 +967,8 @@ PasswordValidator pwdv = new PasswordValidator
 #### Solution
 See the solution for [Password Complexity](#SCS0033)
 #### References
-[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 [CWE-521: Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)  
+[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 <div id="SCS0033"></div>
 
 ### SCS0033 - Password Complexity
@@ -994,8 +994,8 @@ PasswordValidator pwdv = new PasswordValidator
 };
 ```
 #### References
-[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 [CWE-521: Weak Password Requirements](https://cwe.mitre.org/data/definitions/521.html)  
+[MSDN: ASP.NET Identity PasswordValidator Class](https://msdn.microsoft.com/en-us/library/microsoft.aspnet.identity.passwordvalidator.aspx)  
 ## Other
 <div id="SCS0011"></div>
 
@@ -1019,10 +1019,10 @@ transform.Transform(reader, writer);
 
 #### References
 
+[CWE-611: Improper Restriction of XML External Entity Reference](https://cwe.mitre.org/data/definitions/611.html)  
 [XSLT Server Side Injection Attacks](https://www.contextis.com/us/blog/xslt-server-side-injection-attacks)  
 [XML Attack for C# Remote Code Execution](https://zerosum0x0.blogspot.com/2016/05/xml-attack-for-c-remote-code-execution.html)  
 [XsltSettings.EnableScript Property](https://docs.microsoft.com/en-us/dotnet/api/system.xml.xsl.xsltsettings.enablescript?view=net-5.0)  
-[CWE-611: Improper Restriction of XML External Entity Reference](https://cwe.mitre.org/data/definitions/611.html)  
 
 <div id="SCS0012"></div>
 
@@ -1067,9 +1067,9 @@ public class AccountController : Controller
 ```
 
 #### References
+[CWE-284: Improper Access Control](https://cwe.mitre.org/data/definitions/284.html)  
 [Access control vulnerabilities and privilege escalation](https://portswigger.net/web-security/access-control)  
 [Simple authorization in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/security/authorization/simple?view=aspnetcore-3.1)  
-[CWE-284: Improper Access Control](https://cwe.mitre.org/data/definitions/284.html)  
 <div id="SCS0016"></div>
 
 ### SCS0016 - Cross-Site Request Forgery (CSRF)
@@ -1105,9 +1105,9 @@ public class TestController
 }
 ```
 #### References
+[CWE-352: Cross-Site Request Forgery (CSRF)](https://cwe.mitre.org/data/definitions/352.html)  
 [OWASP: Cross-Site Request Forgery](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF))  
 [OWASP: CSRF Prevention Cheat Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29_Prevention_Cheat_Sheet)  
-[CWE-352: Cross-Site Request Forgery (CSRF)](https://cwe.mitre.org/data/definitions/352.html)  
 <div id="SCS0019"></div>
 
 ### SCS0019 - OutputCache Conflict
@@ -1139,8 +1139,8 @@ public class AdminController : Controller
 }
 ```
 #### References
-[Improving Performance with Output Caching](https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/controllers-and-routing/improving-performance-with-output-caching-cs)  
 [CWE-524: Use of Cache Containing Sensitive Information](https://cwe.mitre.org/data/definitions/524.html)  
+[Improving Performance with Output Caching](https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/controllers-and-routing/improving-performance-with-output-caching-cs)  
 <div id="SCS0022"></div>
 
 ### SCS0022 - Event Validation Disabled
@@ -1166,9 +1166,9 @@ Or set it explicitly:
 </system.web>
 ```
 #### References
+[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 [MSDN: pages Element (ASP.NET Settings Schema)](https://msdn.microsoft.com/en-us/library/950xf363(v=vs.100).aspx)  
 [MSDN: Page.EnableEventValidation Property](http://msdn.microsoft.com/en-us/library/system.web.ui.page.enableeventvalidation.aspx)  
-[CWE-554: ASP.NET Misconfiguration: Not Using Input Validation Framework](https://cwe.mitre.org/data/definitions/554.html)  
 <div id="SCS0027"></div>
 
 ### SCS0027 - Open Redirect
@@ -1234,10 +1234,10 @@ public ActionResult LogOn(LogOnModel model, string returnUrl)
 }
 ```
 #### References
+[CWE-601: URL Redirection to Untrusted Site ('Open Redirect')](https://cwe.mitre.org/data/definitions/601.html)  
 [Microsoft: Preventing Open Redirection Attacks (C#)](https://docs.microsoft.com/en-us/aspnet/mvc/overview/security/preventing-open-redirection-attacks)  
 [OWASP: Unvalidated Redirects and Forwards Cheat Sheet](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet)  
 [Hacksplaining: preventing malicious redirects](https://www.hacksplaining.com/prevention/open-redirects)  
-[CWE-601: URL Redirection to Untrusted Site ('Open Redirect')](https://cwe.mitre.org/data/definitions/601.html)  
 <div id="SCS0028"></div>
 
 ### SCS0028 - Insecure Deserialization
@@ -1337,13 +1337,13 @@ will produce the following JSON without type information that is perfectly fine 
 }
 ```
 #### References
+[CWE-502: Deserialization of Untrusted Data](https://cwe.mitre.org/data/definitions/502.html)  
 [BlackHat USA 2017: Friday the 13th: JSON Attacks](https://www.blackhat.com/docs/us-17/thursday/us-17-Munoz-Friday-The-13th-Json-Attacks.pdf)  
 [BlueHat v17: Dangerous Contents - Securing .Net Deserialization](https://www.slideshare.net/MSbluehat/dangerous-contents-securing-net-deserialization)  
 [BlackHat USA 2012: Are you my type?](https://media.blackhat.com/bh-us-12/Briefings/Forshaw/BH_US_12_Forshaw_Are_You_My_Type_Slides.pdf)  
 [OWASP: Deserialization of untrusted data](https://www.owasp.org/index.php/Deserialization_of_untrusted_data)  
 [Deserialization payload generator for a variety of .NET formatters](https://github.com/pwntester/ysoserial.net)  
 [.NET Deserialization Passive Scanner](https://github.com/pwntester/dotnet-deserialization-scanner)  
-[CWE-502: Deserialization of Untrusted Data](https://cwe.mitre.org/data/definitions/502.html)  
 
 # Release Notes
 
