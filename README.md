@@ -537,7 +537,7 @@ Notice that AES itself doesn't protect from encrypted data tampering. For an exa
 [StackOverflow: Authenticated encryption example](http://stackoverflow.com/questions/202011/encrypt-and-decrypt-a-string/10366194#10366194)  
 <div id="SCS0013"></div>
 
-### SCS0013 - Potential usage of weak AES mode
+### SCS0013 - Potential usage of weak CipherMode mode
 The cipher text produced is susceptible to alteration by an adversary.
 #### Risk
 The cipher provides no way to detect that the data has been tampered with. If the cipher text can be controlled by an attacker, it could be altered without detection. The use of AES in CBC mode with a HMAC is recommended guaranteeing integrity and confidentiality.
