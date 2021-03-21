@@ -1340,6 +1340,11 @@ will produce the following JSON without type information that is perfectly fine 
 [CWE-502: Deserialization of Untrusted Data](https://cwe.mitre.org/data/definitions/502.html)  
 
 # Release Notes
+
+## 5.1.0
+* Standalone runner improved. My favorite way to run SCS!
+* Bug fixes and improvements.
+
 ## 5.0.0
 * New inter-procedural taint analysis engine.
 * New sinks and sources.
