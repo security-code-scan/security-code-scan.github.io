@@ -1357,6 +1357,10 @@ will produce the following JSON without type information that is perfectly fine 
 
 # Release Notes
 
+## 5.2.1
+* New parameter `--ignore-msbuild-errors` for standalone runner to ignore errors from incompatible projects.
+* Bug fixes and improvements.
+
 ## 5.1.0
 * Standalone runner improved. My favorite way to run SCS!
 * Bug fixes and improvements.
