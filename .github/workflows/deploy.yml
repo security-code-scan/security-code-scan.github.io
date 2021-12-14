@@ -30,6 +30,8 @@ jobs:
           cd security-code-scan.github.io
           
           $ErrorActionPreference = "Continue";
+          git config --global user.email "octokit@github.com"
+          git config --global user.name "Octokit"
           git add .
           git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/master/website"
           if($LastExitCode -eq 0) {
