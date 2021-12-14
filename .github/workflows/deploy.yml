@@ -28,12 +28,12 @@ jobs:
           Copy-Item security-code-scan/website/out_site/readme.md security-code-scan.github.io/README.md -Force
           Copy-Item security-code-scan/website/images/* security-code-scan.github.io/images/ -Force
           cd security-code-scan.github.io
-          
-          $ErrorActionPreference = "Continue";
+
           git config --global user.email "octokit@github.com"
           git config --global user.name "Octokit"
+          $ErrorActionPreference = "Continue";
           git add .
-          git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/master/website"
+          git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/vs2019/website"
           if($LastExitCode -eq 0) {
             Write-Host "Pushing to the website repo"
             git push
