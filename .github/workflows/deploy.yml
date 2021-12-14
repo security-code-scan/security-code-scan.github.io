@@ -1,0 +1,38 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          path: 'security-code-scan.github.io'
+          
+      - name: Checkout security-code-scan
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          repository: 'security-code-scan/security-code-scan'
+          path: 'security-code-scan'
+        
+      - name: build
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop";
+
+          python security-code-scan/website/generate_static_website.py
+          Copy-Item security-code-scan/website/out_site/readme.md security-code-scan.github.io/README.md -Force
+          Copy-Item security-code-scan/website/images/* security-code-scan.github.io/images/ -Force
+          cd security-code-scan.github.io
+          
+          $ErrorActionPreference = "Continue";
+          git add .
+          git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/master/website"
+          if($LastExitCode -eq 0) {
+            Write-Host "Pushing to the website repo"
+            git push
+          }
