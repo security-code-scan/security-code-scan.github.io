@@ -1355,6 +1355,9 @@ will produce the following JSON without type information that is perfectly fine 
 
 # Release Notes
 
+## 5.6.2
+* Blue-yellow edition in support of Ukraine.
+
 ## 5.6.1
 * Fixed #239 "Adding custom sanitizers to a config file in stand-alone runner".
 
