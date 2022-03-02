@@ -1355,6 +1355,9 @@ will produce the following JSON without type information that is perfectly fine 
 
 # Release Notes
 
+## 5.6.1
+* Fixed #239 "Adding custom sanitizers to a config file in stand-alone runner".
+
 ## 5.6.0
 * Added support for .NET 6.0 and VS2022
 
