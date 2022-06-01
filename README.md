@@ -1355,6 +1355,9 @@ will produce the following JSON without type information that is perfectly fine 
 
 # Release Notes
 
+## 5.6.3
+* [#248](https://github.com/security-code-scan/security-code-scan/pull/248) Be able to exit with non-zero error code when warnings are found
+
 ## 5.6.2
 * Blue-yellow edition in support of Ukraine.
 
