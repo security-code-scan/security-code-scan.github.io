@@ -1355,6 +1355,9 @@ will produce the following JSON without type information that is perfectly fine 
 
 # Release Notes
 
+## 5.6.5
+* Fixed [#257](https://github.com/security-code-scan/security-code-scan/issues/257) "Exception on solution that contains a `Solution Items` section"
+
 ## 5.6.4
 * Support running dotnet tool against a single project
 * Better filtering by projects in the dotnet tool
