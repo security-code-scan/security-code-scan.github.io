@@ -1,3 +1,4 @@
+name: "Sync and deploy"
 on:
   workflow_dispatch:
 
