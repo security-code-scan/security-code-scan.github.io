@@ -37,8 +37,10 @@ jobs:
           git config --global user.name "Octokit"
           $ErrorActionPreference = "Continue";
           git add .
-          git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/vs2019/website"
           if($LastExitCode -eq 0) {
-            Write-Host "Pushing to the website repo"
-            git push
+            git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/vs2019/website"
+            if($LastExitCode -eq 0) {
+              Write-Host "Pushing to the website repo"
+              git push
+            }
           }
