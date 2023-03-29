@@ -36,8 +36,11 @@ jobs:
           git config --global user.email "octokit@github.com"
           git config --global user.name "Octokit"
           $ErrorActionPreference = "Continue";
-          git add .
-          if($LastExitCode -eq 0) {
+          
+          if (-not (git status -s)) {
+            Write-Host "No changes to commit"
+          } else {
+            git add .
             git commit -a -m "Automatic merge with https://github.com/security-code-scan/security-code-scan/tree/vs2019/website"
             if($LastExitCode -eq 0) {
               Write-Host "Pushing to the website repo"
