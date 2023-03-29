@@ -1364,6 +1364,8 @@ will produce the following JSON without type information that is perfectly fine 
 ## 5.6.6
 * Fixed [#258](https://github.com/security-code-scan/security-code-scan/issues/258) "Standalone scanner throws exception: 'ProjectName' is already part of the workspace"
 
+**[Full Changelog](https://github.com/security-code-scan/security-code-scan/compare/5.6.5…5.6.6)**
+
 ## 5.6.5
 * Fixed [#257](https://github.com/security-code-scan/security-code-scan/issues/257) "Exception on solution that contains a `Solution Items` section"
 
